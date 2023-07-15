@@ -10,10 +10,11 @@ namespace TeamManagment.Infrastructure.Services.Tasks
     public interface ITaskService
     {
         Task<MyTask> CreateAsync(CreateTaskDto dto);
-        Task<string> UpdateAsync(UpdateTaskDto dto);
-        Task<string> DeleteAsync(string id);
-        Task<UpdateTaskDto> GetAsync(string id);
+        Task<int> UpdateAsync(UpdateTaskDto dto);
+        Task<int> DeleteAsync(int id);
+        Task<UpdateTaskDto> GetAsync(int id);
         Task<Response<TaskViewModel>> GetAllForDataTable(Request request);
+        Task<int> MarkAsync(int id);
 
     }
 }

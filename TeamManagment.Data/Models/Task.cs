@@ -13,11 +13,14 @@ namespace TeamManagment.Data.Models
         [Required]
         [StringLength(maximumLength:120)]
         public string Description { get; set; }
+
+        public bool IsCompleted { get; set; }
         [Required]
         [DataType(DataType.DateTime)]
         public DateTime DeadLine { get; set; }
         public User Assignee { get; set; }
         public string AssigneeId { get; set; }
+
         public List<Comment> Comments { get; set; }
     }
 }

@@ -1,17 +1,18 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using TeamManagment.Core.Helper;
-using TeamManagment.Infrastructure.Services.Users;
-using TeamManagment.Core.Dtos.User;
 using STD.Web.Controllers;
+using TeamManagment.Core.Dtos.Tasks;
+using TeamManagment.Core.Dtos.User;
+using TeamManagment.Core.Helper;
+using TeamManagment.Infrastructure.Services.Tasks;
 
 namespace TeamManagment.Web.Controllers
 {
-    public class UserController : BaseController
+    public class PersonalTaskController : BaseController
     {
-        private readonly IUserService _userService;
-        public UserController(IUserService userService)
+        private readonly ITaskService _taskService;
+        public PersonalTaskController(ITaskService taskService)
         {
-            _userService = userService;
+            _taskService = taskService;
         }
 
         public IActionResult Index()
@@ -24,13 +25,14 @@ namespace TeamManagment.Web.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> Create([FromForm] CreateUserDto input)
+        public async Task<IActionResult> Create([FromForm] CreateTaskDto input)
         {
             if (ModelState.IsValid)
             {
                 try
                 {
-                    await _userService.CreateAsync(input);
+                    input.AssigneeId = userId ;
+                    await _taskService.CreateAsync(input);
                 }
                 catch (Exception)
                 {
@@ -43,21 +45,21 @@ namespace TeamManagment.Web.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> Update(string id)
+        public async Task<IActionResult> Update(int id)
         {
-            var user = await _userService.GetAsync(id);
+            var user = await _taskService.GetAsync(id);
 
             return View(user);
         }
 
         [HttpPost]
-        public async Task<IActionResult> Update([FromForm] UpdateUserDto input)
+        public async Task<IActionResult> Update([FromForm] UpdateTaskDto input)
         {
             if (ModelState.IsValid)
             {
                 try
                 {
-                    await _userService.UpdateAsync(input);
+                    await _taskService.UpdateAsync(input);
                 }
                 catch (Exception)
                 {
@@ -70,11 +72,11 @@ namespace TeamManagment.Web.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> Delete(string id)
+        public async Task<IActionResult> Delete(int id)
         {
             try
             {
-                await _userService.DeleteAsync(id);
+                await _taskService.DeleteAsync(id);
             }
             catch (Exception)
             {
@@ -85,7 +87,20 @@ namespace TeamManagment.Web.Controllers
         [HttpPost]
         public async Task<JsonResult> GetDataTableData(Request request, string x)
         {
-            return Json(await _userService.GetAllForDataTable(request));
+            return Json(await _taskService.GetAllForDataTable(request));
         }
+
+        public async Task<IActionResult> MarkAsComplete(int id) {
+            try
+            {
+                await _taskService.MarkAsync(id);
+            }
+            catch (Exception)
+            {
+                return Ok(Result.UpdateStatusSuccessResult());
+            }
+            return Ok(Result.EditFailResult());
+        }
+
     }
 }

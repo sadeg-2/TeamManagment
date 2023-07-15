@@ -1,12 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace TeamManagment.Core.ViewModels
+﻿namespace TeamManagment.Core.ViewModels
 {
     public class TaskViewModel
     {
+        public int Id { get; set; }
+        public string Title { get; set; }
+        public string Description { get; set; }
+
+        public bool IsCompleted { get; set; }
+        public string DeadLine { get; set; }
     }
 }

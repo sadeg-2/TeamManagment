@@ -2,6 +2,7 @@
 
 using TeamManagment.Infrasrtucture.AutoMapper;
 using TeamManagment.Infrastructure.Services;
+using TeamManagment.Infrastructure.Services.Tasks;
 using TeamManagment.Infrastructure.Services.Users;
 
 namespace TeamManagment.Infrastructure.Extensions
@@ -13,6 +14,7 @@ namespace TeamManagment.Infrastructure.Extensions
             services.AddAutoMapper(typeof(MapperProfile).Assembly);
             services.AddScoped<IUserService, UserService>();
             services.AddScoped<IFileService,FileService>();
+            services.AddScoped<ITaskService, TaskService>();
 
             return services;
         }
