@@ -1,5 +1,6 @@
 ﻿
 using System.ComponentModel.DataAnnotations;
+using TeamManagment.Core.Enums;
 
 namespace TeamManagment.Data.Models
 {
@@ -14,7 +15,8 @@ namespace TeamManagment.Data.Models
         [StringLength(maximumLength:120)]
         public string Description { get; set; }
 
-        public bool IsCompleted { get; set; }
+        [Range(0,7)]
+        public TaskStatee IsCompleted { get; set; }
         [Required]
         [DataType(DataType.DateTime)]
         public DateTime DeadLine { get; set; }

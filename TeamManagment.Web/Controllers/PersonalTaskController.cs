@@ -2,6 +2,7 @@
 using STD.Web.Controllers;
 using TeamManagment.Core.Dtos.Tasks;
 using TeamManagment.Core.Dtos.User;
+using TeamManagment.Core.Enums;
 using TeamManagment.Core.Helper;
 using TeamManagment.Infrastructure.Services.Tasks;
 
@@ -10,13 +11,16 @@ namespace TeamManagment.Web.Controllers
     public class PersonalTaskController : BaseController
     {
         private readonly ITaskService _taskService;
+        private TaskStatee _status; 
         public PersonalTaskController(ITaskService taskService)
         {
-            _taskService = taskService;
+             _taskService = taskService;
         }
 
         public IActionResult Index()
         {
+            
+            
             return View();
         }
         public IActionResult Create()
@@ -85,15 +89,16 @@ namespace TeamManagment.Web.Controllers
             return Ok(Result.DeleteSuccessResult());
         }
         [HttpPost]
-        public async Task<JsonResult> GetDataTableData(Request request, string x)
+        public async Task<JsonResult> GetDataTableData(Request request, int filter)
         {
-            return Json(await _taskService.GetAllForDataTable(request));
+            return Json(await _taskService.GetAllForDataTable(request , userId ,(TaskStatee) filter));
         }
 
-        public async Task<IActionResult> MarkAsComplete(int id) {
+
+        public async Task<IActionResult> MarkAsComplete(int id , int status) {
             try
             {
-                await _taskService.MarkAsync(id);
+                await _taskService.MarkAsync(id,(TaskStatee)status);
             }
             catch (Exception)
             {
@@ -101,6 +106,8 @@ namespace TeamManagment.Web.Controllers
             }
             return Ok(Result.EditFailResult());
         }
+
+       
 
     }
 }

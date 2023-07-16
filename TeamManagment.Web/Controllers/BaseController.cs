@@ -29,12 +29,12 @@ namespace STD.Web.Controllers
             //    ViewData["UserId"] = userId;
             //    myUser = await _userManager.GetAsync(userName); 
             //}
-            
-            userId = "a1ba4b54-0d5b-467c-9b32-c48aa6f87b34";
-            userName = "sadeg.magde024@gmail.com"; 
-            
-            //userId = "0890e21b-bbaa-4b4f-999b-b45c861d94fd";
-            //userName = "heema@heema";
+
+            //userId = "2a27fd4e-5749-4868-9b8c-ecf1d73f582a";
+            //userName = "sadeg.magde024@gmail.com";
+
+            userId = "df0fe0e0-90d9-4cc3-87f0-ae6ccab4b0f3";
+            userName = "heema@heema";
 
             base.OnActionExecuting(context);
         }

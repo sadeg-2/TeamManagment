@@ -1,4 +1,6 @@
-﻿namespace TeamManagment.Core.ViewModels
+﻿using TeamManagment.Core.Enums;
+
+namespace TeamManagment.Core.ViewModels
 {
     public class TaskViewModel
     {
@@ -6,7 +8,7 @@
         public string Title { get; set; }
         public string Description { get; set; }
 
-        public bool IsCompleted { get; set; }
+        public TaskStatee IsCompleted { get; set; }
         public string DeadLine { get; set; }
     }
 }

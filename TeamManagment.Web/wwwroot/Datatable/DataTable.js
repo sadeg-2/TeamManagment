@@ -5,7 +5,7 @@
         url = "GetDataTableData";
     }
 
-    $("#kt_datatable_dom_positioning").DataTable(
+$("#kt_datatable_dom_positioning").DataTable(
     {
         "language": {
             "lengthMenu": "عرض _MENU_",
@@ -25,6 +25,12 @@
         ajax: {
             url: url,
             type: "POST",
+            data: function (d) {
+                // Add the selected value from the form-select to the AJAX request data
+                var selectedValue = $('#TaskFilter').val();
+                d.filter = selectedValue; // Assuming the server expects the filter parameter as 'filter'
+            }
+
         },
         //bSort: false,
         processing: true,
@@ -33,6 +39,7 @@
         columns: columns,
         fnDrawCallback: function (data)
         {
+            
             if (typeof _funAfterGetData == 'function')
             {
                 _funAfterGetData();
