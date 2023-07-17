@@ -45,7 +45,7 @@ namespace TeamManagment.Web.Controllers
                 return Ok(Result.AddSuccessResult());
 
             }
-            return PartialView("_Create");
+            return PartialView("_Create",input);
         }
 
         [HttpGet]
@@ -91,7 +91,7 @@ namespace TeamManagment.Web.Controllers
         [HttpPost]
         public async Task<JsonResult> GetDataTableData(Request request, int filter)
         {
-            return Json(await _taskService.GetAllForDataTable(request , userId ,(TaskStatee) filter));
+            return Json(await _taskService.GetAllForDataTable(request , userId ,(TaskStatee)filter));
         }
 
 

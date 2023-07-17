@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using TeamManagment.Web.Data;
 
@@ -11,9 +12,10 @@ using TeamManagment.Web.Data;
 namespace TeamManagment.Web.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20230716070903_update_team_table")]
+    partial class update_team_table
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -325,14 +327,7 @@ namespace TeamManagment.Web.Data.Migrations
                         .HasMaxLength(15)
                         .HasColumnType("nvarchar(15)");
 
-                    b.Property<int>("NumOfTeamMember")
-                        .HasColumnType("int");
-
                     b.Property<string>("TeamLeaderUserName")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("TeamLeaderUserName2")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 

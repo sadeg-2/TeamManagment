@@ -1,6 +1,10 @@
 ﻿@model UserViewModel
 @{
     ViewBag.Title = "User Managment";
+    CreateUserDto c = new CreateUserDto() { 
+        FullName = "Hehe "
+    
+    };
 }
 <!--begin::Header-->
 <!--begin::Toolbar-->
@@ -28,6 +32,8 @@
                 </a>
             </div>
             <div id="popupContainer"></div>
+            @*<partial name="_Create.cshtml" model="@c">*@
+
         </div>
         <!--end::Header-->
         <div class="card-body py-3">
@@ -163,7 +169,7 @@
                     type: 'GET',
                     success: function (result) {
                         $('#popupContainer').html(result);
-                        $('#kt_modal_new').modal('show');
+                        $('#kt_modal_1').modal('show');
                     },
                     error: function (xhr, status, error) {
                         console.error(error);
@@ -173,8 +179,8 @@
         });
 
         $(document).on('click', function (e) {
-            if (!$('#kt_modal_new').is(e.target) && $('#kt_modal_new').has(e.target).length === 0) {
-                $('#kt_modal_new').modal('hide');
+            if (!$('#kt_modal_1').is(e.target) && $('#kt_modal_1').has(e.target).length === 0) {
+                $('#kt_modal_1').modal('hide');
             }
         });
     </script>

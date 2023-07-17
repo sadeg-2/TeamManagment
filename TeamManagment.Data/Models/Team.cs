@@ -13,7 +13,12 @@ namespace TeamManagment.Data.Models
         [Required]
         [StringLength (maximumLength:50 , MinimumLength = 5)]
         public string Description { get; set; }
+        [Required]
+        public string TeamLeaderUserName { get; set; }
+        public int NumOfTeamMember { get; set; }
 
+        [Required]
+        public string ImageUrl { get; set; }
         public List<TeamMember> TeamMembers { get; set; }
 
     }

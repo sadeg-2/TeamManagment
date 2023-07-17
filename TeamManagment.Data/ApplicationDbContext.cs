@@ -20,6 +20,7 @@ namespace TeamManagment.Web.Data
         {
             base.OnModelCreating(builder);
             builder.Entity<User>().HasQueryFilter(x => !x.IsDelete);
+            builder.Entity<TeamMember>().HasQueryFilter(x => !x.Team.IsDelete);
         }
 
     }

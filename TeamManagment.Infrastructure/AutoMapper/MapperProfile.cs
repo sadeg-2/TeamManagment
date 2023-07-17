@@ -21,6 +21,14 @@ namespace TeamManagment.Infrasrtucture.AutoMapper
             CreateMap<MyTask, UpdateTaskDto>();
             CreateMap<CreateTaskDto, MyTask>();
 
+            CreateMap<Team, TeamViewModel>();
+
+            CreateMap<UpdateTeamDto, Team>().ForMember(x => x.ImageUrl, x => x.Ignore());
+            CreateMap<Team, UpdateTeamDto>().ForMember(x => x.ImageUrl, x => x.Ignore());
+            CreateMap<CreateTeamDto, Team>();
+
+
+
 
         }
     }

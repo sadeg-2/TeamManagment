@@ -9,4 +9,6 @@ global using Microsoft.EntityFrameworkCore;
 global using TeamManagment.Core.Constants;
 global using TeamManagment.Core.Dtos.Tasks;
 global using MyTask = TeamManagment.Data.Models.Task;
+global using TeamManagment.Core.Dtos.Teams;
+
 

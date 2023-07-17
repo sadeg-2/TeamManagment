@@ -98,8 +98,7 @@ namespace TeamManagment.Infrastructure.Services.Users
             {
                 throw new Exception("");
             }
-            var updatedUser = _mapper.Map<UpdateUserDto>(student);
-            return updatedUser;
+            return _mapper.Map<UpdateUserDto>(student);
         }
 
         public async Task<string> UpdateAsync(UpdateUserDto dto)
@@ -113,8 +112,12 @@ namespace TeamManagment.Infrastructure.Services.Users
             if (user == null)
             {
                 throw new Exception();
-
             }
+            if (dto.ImageUrl != null)
+            {
+                user.ImageUrl = await _fileService.SaveFile(dto.ImageUrl, FolderNames.ImagesFolder);
+            }
+
             var updatedUser = _mapper.Map(source : dto,destination :user);
             _db.Update(updatedUser);
             _db.SaveChanges();
