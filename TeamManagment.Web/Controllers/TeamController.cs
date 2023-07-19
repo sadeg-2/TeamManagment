@@ -47,9 +47,12 @@ namespace TeamManagment.Web.Controllers
         [HttpGet]
         public IActionResult Update(int id)
         {
-            var user = _teamService.GetAsync(id);
-
-            return View(user);
+            var team = _teamService.GetAsync(id);
+            if (team == null)
+            {
+                return Ok(Result.EditFailResult());
+            }
+            return PartialView( "_UpdateProfile", team);
         }
 
         [HttpPost]
@@ -89,6 +92,17 @@ namespace TeamManagment.Web.Controllers
         {
             return Json(await _teamService.GetAllForDataTable(request));
         }
-       
+        [HttpGet]
+        public IActionResult ProfileTeam(int id) {
+            return View(_teamService.GetTeam(id));
+        }
+        public ActionResult LoadPartialView(string target)
+        {
+            string partialViewName = "_" + target;
+
+            return PartialView(partialViewName);
+        }
+
+
     }
 }

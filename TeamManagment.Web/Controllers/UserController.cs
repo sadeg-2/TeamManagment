@@ -47,7 +47,7 @@ namespace TeamManagment.Web.Controllers
         {
             var user = await _userService.GetAsync(id);
 
-            return View(user);
+            return PartialView("_Update" , user);
         }
 
         [HttpPost]
@@ -66,7 +66,7 @@ namespace TeamManagment.Web.Controllers
                 return Ok(Result.EditSuccessResult());
 
             }
-            return View();
+            return NotFound();
         }
 
         [HttpGet]
@@ -78,7 +78,7 @@ namespace TeamManagment.Web.Controllers
             }
             catch (Exception)
             {
-                return Ok(Result.DeleteFailResult());
+                return NotFound();
             }
             return Ok(Result.DeleteSuccessResult());
         }

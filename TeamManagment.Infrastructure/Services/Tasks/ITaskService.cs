@@ -15,7 +15,11 @@ namespace TeamManagment.Infrastructure.Services.Tasks
         Task<int> DeleteAsync(int id);
         Task<UpdateTaskDto> GetAsync(int id);
         Task<Response<TaskViewModel>> GetAllForDataTable(Request request , string AssigneeId, TaskStatee filter);
+        Task<Response<TaskViewModel>> GetAllDeletedTask(Request request , string AssigneeId);
         Task<int> MarkAsync(int id, TaskStatee status);
+
+        int RecoverTask(int id);
+        int RemoveTask(int id);
 
     }
 }

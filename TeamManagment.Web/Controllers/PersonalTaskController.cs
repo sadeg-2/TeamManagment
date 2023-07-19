@@ -5,6 +5,7 @@ using TeamManagment.Core.Dtos.User;
 using TeamManagment.Core.Enums;
 using TeamManagment.Core.Helper;
 using TeamManagment.Infrastructure.Services.Tasks;
+using static Microsoft.EntityFrameworkCore.DbLoggerCategory.Database;
 
 namespace TeamManagment.Web.Controllers
 {
@@ -51,11 +52,14 @@ namespace TeamManagment.Web.Controllers
         [HttpGet]
         public async Task<IActionResult> Update(int id)
         {
-            var user = await _taskService.GetAsync(id);
-
-            return View(user);
+            var task = await _taskService.GetAsync(id);
+            if (task == null)
+            {
+                return RedirectToAction("Index");
+            }
+            task.AssigneeId = userId;
+            return PartialView("_Update", task);
         }
-
         [HttpPost]
         public async Task<IActionResult> Update([FromForm] UpdateTaskDto input)
         {
@@ -72,7 +76,7 @@ namespace TeamManagment.Web.Controllers
                 return Ok(Result.EditSuccessResult());
 
             }
-            return View();
+            return NotFound();
         }
 
         [HttpGet]
@@ -93,7 +97,42 @@ namespace TeamManagment.Web.Controllers
         {
             return Json(await _taskService.GetAllForDataTable(request , userId ,(TaskStatee)filter));
         }
+        [HttpPost]
+        public async Task<JsonResult> GetRecycleTask(Request request ) {
 
+            return Json(await _taskService.GetAllDeletedTask(request, userId));
+        }
+
+        public IActionResult RecycleTask() {
+
+            return View();
+        }
+
+        [HttpGet]
+        public IActionResult Recover(int id) {
+            try
+            {
+                _taskService.RecoverTask(id);
+            }
+            catch (Exception)
+            {
+                return Ok(Result.AddFailResult());
+            }
+            return Ok(Result.AddSuccessResult());
+        }
+        [HttpGet]
+        public IActionResult Remove(int id) {
+            try
+            {
+                _taskService.RemoveTask(id);
+            }
+            catch (Exception)
+            {
+                return Ok(Result.DeleteFailResult());
+            }
+            return Ok(Result.DeleteSuccessResult());
+
+        }
 
         public async Task<IActionResult> MarkAsComplete(int id , int status) {
             try

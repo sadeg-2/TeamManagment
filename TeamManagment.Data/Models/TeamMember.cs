@@ -18,5 +18,6 @@ namespace TeamManagment.Data.Models
         [Required]
         public TeamUserType MemberPosition { get; set; }
 
+
     }
 }

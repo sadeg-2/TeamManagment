@@ -18,6 +18,7 @@ namespace TeamManagment.Infrastructure.Services.Tasks
             var task = _mapper.Map<MyTask>(dto);
             task.CreatedAt = DateTime.Now;
             task.CreatedBy = "Me";
+            task.IsCompleted = TaskStatee.UnCompleted;
             await _db.AddAsync(task);
             await _db.SaveChangesAsync();
             return task;
@@ -40,12 +41,9 @@ namespace TeamManagment.Infrastructure.Services.Tasks
         {
             var c = request;
             Response<TaskViewModel> response = new Response<TaskViewModel>() { Draw = request.Draw };
-            var data = _db.Tasks.Where(x => x.AssigneeId == AssigneeId && (x.IsCompleted == filter || filter == TaskStatee.None )).AsQueryable();
-            
-            
-            response.RecordsTotal = data.Count();
+            var data = _db.Tasks.Where(x => x.AssigneeId == AssigneeId && (x.IsCompleted == filter || filter == TaskStatee.None ) && !x.IsDelete).AsQueryable();
 
-            
+            response.RecordsTotal = data.Count();
             
             if (request.Search.Value != null)
             {
@@ -114,5 +112,65 @@ namespace TeamManagment.Infrastructure.Services.Tasks
             return id;
         }
 
+        public async Task<Response<TaskViewModel>> GetAllDeletedTask(Request request, string AssigneeId)
+        {
+            var c = request;
+            Response<TaskViewModel> response = new Response<TaskViewModel>() { Draw = request.Draw };
+            var data = _db.Tasks.Where(x => x.AssigneeId == AssigneeId && x.IsDelete).AsQueryable();
+
+            response.RecordsTotal = data.Count();
+
+            if (request.Search.Value != null)
+            {
+                data = data.Where(x =>
+                    x.Title.ToLower().Contains(request.Search.Value.ToLower()) ||
+                    x.Description.ToLower().Contains(request.Search.Value.ToLower())
+                );
+            }
+            response.RecordsFiltered = await data.CountAsync();
+
+            if (request.Order != null && request.Order.Count > 0)
+            {
+                var sortColumn = request.Columns.ElementAt(request.Order.FirstOrDefault().Column).Name;
+                var sortDirection = request.Order.FirstOrDefault().Dir;
+                data = data.OrderBy(string.Concat(sortColumn, " ", sortDirection));
+            }
+            response.Data = await data.Skip(c.Start).Take(c.Length).Select(x => new TaskViewModel
+            {
+                Title = x.Title,
+                DeadLine = x.DeadLine.ToShortDateString(),
+                Description = x.Description,
+                Id = x.Id,
+                IsCompleted = x.IsCompleted
+
+            }).ToListAsync();
+
+            return response;
+        }
+
+        public int RecoverTask(int id)
+        {
+            var task = _db.Tasks.SingleOrDefault(x => x.Id == id && x.IsDelete);
+            if (task == null)
+            {
+                throw new Exception();
+            }
+            task.IsDelete = false;
+            _db.Update(task);
+            _db.SaveChanges();
+            return id;
+        }
+
+        public int RemoveTask(int id)
+        {
+            var task = _db.Tasks.SingleOrDefault(x => x.Id == id && x.IsDelete);
+            if (task == null)
+            {
+                throw new Exception();
+            }
+            _db.Remove(task);
+            _db.SaveChanges();
+            return id;
+        }
     }
 }

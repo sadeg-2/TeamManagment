@@ -1,0 +1,197 @@
+﻿@model TaskViewModel
+@{
+}
+<!--begin::Header-->
+<!--begin::Toolbar-->
+<div id="kt_app_toolbar" class="app-toolbar py-3 py-lg-6">
+</div>
+<!--end::Toolbar-->
+<div id="kt_app_content_container" class="app-container container-xxl">
+    <div class="card mb-5 mb-xl-8">
+        <div class="card-header border-0 pt-5">
+            <h3 class="card-title align-items-start flex-column">
+                <span class="card-label fw-bold fs-3 mb-1"> Recycle Task </span>
+            </h3>
+        </div>
+        <!--end::Header-->
+        <div class="card-body py-3">
+            <div class="table-responsive">
+                <table id="kt_datatable_dom_positioning" class="table table-row-dashed table-row-gray-300 align-middle gs-0 gy-4">
+                    <thead>
+                        <tr class="fw-bold fs-6 text-gray-800 px-7">
+                            <th>@Html.DisplayNameFor(x => x.Title)</th>
+                            <th class="text-center">@Html.DisplayNameFor(x => x.DeadLine)</th>
+                            <th class="text-center">العمليات</th>
+                        </tr>
+                    </thead>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+@section Scripts
+    {
+    <script src="~/datatable/datatable.js"></script>
+    <script>
+        var datatable = DataTable(
+            "GetRecycleTask",
+            [
+                { data: "title", name: "Title", className: "dt-right align-middle" },
+                { data: "deadLine", name: "DeadLine", className: "dt-center align-middle" },
+                {
+                    data: null,
+                    name: null,
+                    orderable: false,
+                    className: "dt-center align-middle",
+                    render: function (data) {
+                        //href='/PersonalTask/Update/" + data.id + "'
+                        return "<a id='recoveryButton_" + data.id + "'class='btn edit' data-edit-url='/PersonalTask/Recover/'>" +
+                            "<span class='svg-icon svg-icon-2'>" +
+                            "<svg xmlns='http://www.w3.org/2000/svg' width = '16' height = '16' fill = 'currentColor' class='bi bi-arrow-return-left' viewBox = '0 0 16 16' >"+
+                            "<path fill-rule='evenodd' d='M14.5 1.5a.5.5 0 0 1 .5.5v4.8a2.5 2.5 0 0 1-2.5 2.5H2.707l3.347 3.346a.5.5 0 0 1-.708.708l-4.2-4.2a.5.5 0 0 1 0-.708l4-4a.5.5 0 1 1 .708.708L2.707 8.3H12.5A1.5 1.5 0 0 0 14 6.8V2a.5.5 0 0 1 .5-.5z' />"+
+                            "</svg></span>" +
+                            "</a>" +
+                            "<a id='removeButton_" + data.id + "'class='btn delete' data-delete-url='/PersonalTask/Remove/'>" +
+                            "<span class='svg-icon svg-icon-2'>" +
+                            "<svg width='24' height='24' viewBox='0 0 24 24' fill='none' xmlns='http://www.w3.org/2000/svg'>" +
+                            "<path d='M5 9C5 8.44772 5.44772 8 6 8H18C18.5523 8 19 8.44772 19 9V18C19 19.6569 17.6569 21 16 21H8C6.34315 21 5 19.6569 5 18V9Z' fill='currentColor'></path>" +
+                            "<path opacity='0.5' d='M5 5C5 4.44772 5.44772 4 6 4H18C18.5523 4 19 4.44772 19 5V5C19 5.55228 18.5523 6 18 6H6C5.44772 6 5 5.55228 5 5V5Z' fill='currentColor'></path>" +
+                            "<path opacity='0.5' d='M9 4C9 3.44772 9.44772 3 10 3H14C14.5523 3 15 3.44772 15 4V4H9V4Z' fill='currentColor'></path>" +
+                            "</svg></span>" +
+                            "</a>";
+                    },
+                }
+            ],
+        );
+//        <button type="button" class="btn btn-outline-danger">
+//                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-trash" viewBox="0 0 16 16">
+//  <path d="M5.5 5.5A.5.5 0 0 1 6 6v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5Zm2.5 0a.5.5 0 0 1 .5.5v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5Zm3 .5a.5.5 0 0 0-1 0v6a.5.5 0 0 0 1 0V6Z"></path>
+//  <path d="M14.5 3a1 1 0 0 1-1 1H13v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V4h-.5a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1H6a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1h3.5a1 1 0 0 1 1 1v1ZM4.118 4 4 4.059V13a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V4.059L11.882 4H4.118ZM2.5 3h11V2h-11v1Z"></path>
+//</svg>
+                
+//              </button>
+
+        // Function to handle delete confirmation
+        function RemoveItem() {
+            var deleteUrl = $(this).data('delete-url');
+            var id = $(this).attr('id').split('_')[1];
+
+            Swal.fire({
+                title: 'Are you sure?',
+                text: `You are about to remove This Task with ID: ${id} + ${deleteUrl}`,
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonText: 'Yes',
+                cancelButtonText: 'No'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    // User clicked "Yes"
+                    $.ajax({
+                        url: deleteUrl + id,
+                        type: 'Get',
+                        success: function (response) {
+                            Swal.fire({
+                                title: 'Removed!',
+                                text: `This Task with ID: ${id} has been removed.`,
+                                icon: 'success',
+                                showConfirmButton: true,
+                                confirmButtonText: 'OK'
+                            }).then(() => {
+                                // Perform any additional action after the confirmation alert is closed
+                                console.log('Additional action after OK is pressed');
+
+                                datatable.ajax.reload();
+                            });
+                        },
+                        error: function (xhr, status, error) {
+                            Swal.fire('Error', 'An error occurred while removing the Task.', 'error');
+                        }
+                    });
+                } else if (result.dismiss === Swal.DismissReason.cancel) {
+                    // User clicked "No" or closed the dialog
+                    Swal.fire('Cancelled', `Remove of Task with ID: ${id} was cancelled.`, 'info');
+                }
+            });
+        }
+        // Add event listener to delete buttons
+        $(document).on('click', '[id^="removeButton_"]', RemoveItem);
+
+        function RecoverItem() {
+            var recoverUrl = $(this).data('edit-url');
+            var id = $(this).attr('id').split('_')[1];
+
+            Swal.fire({
+                title: 'Are you sure?',
+                text: `You are about to recover This Task with ID: ${id}`,
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonText: 'Yes',
+                cancelButtonText: 'No'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    $.ajax({
+                        url: recoverUrl + id,
+                        type: 'Get',
+                        success: function (response) {
+                            Swal.fire({
+                                title: 'Removed!',
+                                text: `This Task with ID: ${id} has been recovered.`,
+                                icon: 'success',
+                                showConfirmButton: true,
+                                confirmButtonText: 'OK'
+                            }).then(() => {
+                                console.log('Additional action after OK is pressed');
+                                datatable.ajax.reload();
+                            });
+                        },
+                        error: function (xhr, status, error) {
+                            Swal.fire('Error', 'An error occurred while recover the Task.', 'error');
+                        }
+                    });
+                } else if (result.dismiss === Swal.DismissReason.cancel) {
+                    Swal.fire('Cancelled', `Recovering of Task with ID: ${id} was cancelled.`, 'info');
+                }
+            });
+        }
+        $(document).on('click', '[id^="recoveryButton_"]', RecoverItem);
+
+        function _funAfterGetData() {
+            $('.status-check-input').change(function () {
+                let me = this;
+                if (me.checked) {
+                    $.ajax(
+                        {
+                            url: me.dataset.action + "1"
+                        });
+                }
+                else {
+                    $.ajax(
+                        {
+                            url: me.dataset.action + "2"
+                        });
+                }
+            });
+
+            $('.onSale-check-input').change(function () {
+                let me = this;
+                if (me.checked) {
+                    $.ajax(
+                        {
+                            url: me.dataset.action + true
+                        });
+                }
+                else {
+                    $.ajax(
+                        {
+                            url: me.dataset.action + false
+                        });
+                }
+            });
+        }
+        $('#TaskFilter').on('change', function () {
+            // Redraw the DataTable
+            datatable.ajax.reload();
+        });
+    </script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+}

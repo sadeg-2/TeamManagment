@@ -11,7 +11,8 @@ namespace TeamManagment.Infrastructure.Services.Teams
         int DeleteAsync(int teamId);
         UpdateTeamDto GetAsync(int teamId);
         Task<Response<TeamViewModel>> GetAllForDataTable(Request request);
-
+        TeamViewModel GetTeam(int teamId);
+        
 
     }
 }

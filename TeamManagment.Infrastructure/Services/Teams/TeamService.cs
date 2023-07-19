@@ -99,7 +99,7 @@ namespace TeamManagment.Infrastructure.Services.Teams
                     ImageUrl = x.ImageUrl,
                     NumOfTeamMember = x.NumOfTeamMember,
                     TeamLeaderUserName = x.TeamLeaderUserName,
-
+                    IsDelete = x.IsDelete,
                 }).ToListAsync();
             return response;
         }
@@ -114,6 +114,15 @@ namespace TeamManagment.Infrastructure.Services.Teams
             return _mapper.Map<UpdateTeamDto>(team);
         }
 
+        public TeamViewModel GetTeam(int teamId) {
+            var team = _db.Teams.SingleOrDefault(x => x.Id == teamId);
+            if (team == null)
+            {
+                throw new Exception();
+            }
+            return _mapper.Map<TeamViewModel>(team);
+
+        }
         public async Task<Team> UpdateAsync(UpdateTeamDto dto, string username)
         {
             var team =  _db.Teams.SingleOrDefault(x => x.Id == dto.Id);

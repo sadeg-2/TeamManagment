@@ -10,6 +10,8 @@ namespace TeamManagment.Core.ViewModels
         public string TeamLeaderUserName { get; set; }
         public string ImageUrl { get; set; }
         public int NumOfTeamMember { get; set; }
+        public bool IsDelete { get; set; }
+
 
     }
 }
