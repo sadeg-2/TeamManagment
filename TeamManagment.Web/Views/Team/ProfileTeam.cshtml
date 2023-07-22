@@ -1,11 +1,13 @@
 ﻿@model TeamViewModel
+@{
 
+}
 <!--begin::Toolbar-->
 <div id="kt_app_toolbar" class="app-toolbar py-3 py-lg-6">
 </div>
 <!--end::Toolbar-->
 <!--begin::Content container-->
-<div id="kt_app_content_container" class="app-container container-xxl">
+<div id="kt_app_content_container" class="app-container container-xxl" data-team-id="@Model.Id">
 	<!--begin::Navbar-->
 	<div class="card mb-5 mb-xxl-8">
 		<div class="card-body pt-9 pb-0">
@@ -160,7 +162,6 @@
 				data: { target: value }, // Pass the text value to the action method
 				success: function (response) {
 					// Handle the response here (e.g., update the card content)
-					console.log("Content loaded successfully:", response);
 					$("#cardContent").empty().html(response);
 
 				},

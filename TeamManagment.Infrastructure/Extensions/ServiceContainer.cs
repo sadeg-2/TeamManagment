@@ -17,6 +17,15 @@ namespace TeamManagment.Infrastructure.Extensions
             services.AddScoped<IFileService,FileService>();
             services.AddScoped<ITaskService, TaskService>();
             services.AddScoped<ITeamService, TeamService>();
+            services.AddScoped<ITeamMemberService, TeamMemberService>();
+
+            services.AddDistributedMemoryCache();
+            services.AddSession(options =>
+            {
+                // Set the desired session timeout if needed
+                options.IdleTimeout = TimeSpan.FromMinutes(30);
+                options.Cookie.HttpOnly = true;
+            });
 
             return services;
         }

@@ -14,9 +14,12 @@ namespace TeamManagment.Data.Models
 
         public User Member { get; set; }
         public string MemberId { get; set; }
+        public string UserName { get; set; }
 
         [Required]
         public TeamUserType MemberPosition { get; set; }
+
+        public List<Assignment> Assignments { get; set; }
 
 
     }

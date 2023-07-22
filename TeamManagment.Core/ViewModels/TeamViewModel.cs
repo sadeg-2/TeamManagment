@@ -1,5 +1,4 @@
-﻿using System.ComponentModel.DataAnnotations;
-
+﻿
 namespace TeamManagment.Core.ViewModels
 {
     public class TeamViewModel

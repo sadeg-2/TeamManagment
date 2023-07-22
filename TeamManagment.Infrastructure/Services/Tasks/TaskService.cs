@@ -48,8 +48,8 @@ namespace TeamManagment.Infrastructure.Services.Tasks
             if (request.Search.Value != null)
             {
                 data = data.Where(x =>
-                    x.Title.ToLower().Contains(request.Search.Value.ToLower()) ||
-                    x.Description.ToLower().Contains(request.Search.Value.ToLower())
+                    x.Title.ToLower().Contains(request.Search.Value.ToLower())
+                   // x.Description.ToLower().Contains(request.Search.Value.ToLower())
                     //||
                     //x.Assignee.UserName.ToLower().Contains(request.Search.Value.ToLower())
                 );

@@ -44,6 +44,7 @@ namespace TeamManagment.Infrastructure.Services.Teams
                 CreatedAt = DateTime.Now,
                 CreatedBy = teamLeaderUserName,
                 TeamId = team.Id,
+                UserName = teamLeaderUserName,
             };
             _db.TeamMembers.Add(teamLeader);
             _db.SaveChanges();
