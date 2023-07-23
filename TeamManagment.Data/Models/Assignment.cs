@@ -16,5 +16,8 @@ namespace TeamManagment.Data.Models
         public TeamMember Creator { get; set; }
         public int CreatorId { get; set; }
 
+        public Team Team { get; set; }
+        public int TeamId { get; set; }
+
     }
 }

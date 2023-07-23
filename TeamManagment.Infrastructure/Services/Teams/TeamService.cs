@@ -67,11 +67,11 @@ namespace TeamManagment.Infrastructure.Services.Teams
             return team.Id;
         }
 
-        public async Task<Response<TeamViewModel>> GetAllForDataTable(Request request)
+        public async Task<Response<TeamViewModel>> GetAllForDataTable(Request request , string username )
         {
             Response<TeamViewModel> response = new Response<TeamViewModel>() { Draw = request.Draw };
 
-            var data = _db.Teams.AsQueryable();
+            var data = _db.Teams.Where(x=> x.TeamLeaderUserName == username).AsQueryable();
             response.RecordsTotal = data.Count();
 
             if (request.Search.Value != null)

@@ -10,7 +10,7 @@ namespace TeamManagment.Infrastructure.Services.Teams
         Task<Team> UpdateAsync(UpdateTeamDto dto, string username);
         int DeleteAsync(int teamId);
         UpdateTeamDto GetAsync(int teamId);
-        Task<Response<TeamViewModel>> GetAllForDataTable(Request request);
+        Task<Response<TeamViewModel>> GetAllForDataTable(Request request , string username);
         TeamViewModel GetTeam(int teamId);
         
 

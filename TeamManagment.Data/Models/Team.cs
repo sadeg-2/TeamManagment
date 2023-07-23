@@ -20,6 +20,7 @@ namespace TeamManagment.Data.Models
         [Required]
         public string ImageUrl { get; set; }
         public List<TeamMember> TeamMembers { get; set; }
+        public List<Assignment> Assignments { get; set; }
 
     }
 }

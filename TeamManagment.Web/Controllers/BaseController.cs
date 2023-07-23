@@ -30,11 +30,11 @@ namespace STD.Web.Controllers
             //    myUser = await _userManager.GetAsync(userName); 
             //}
 
-            userId = "9fcf66d7-2bab-437e-976c-23d54607281a";
-            userName = "sadeg.magde024@gmail.com";
+            //userId = "9fcf66d7-2bab-437e-976c-23d54607281a";
+            //userName = "sadeg.magde024@gmail.com";
 
-            //userId = "df0fe0e0-90d9-4cc3-87f0-ae6ccab4b0f3";
-            //userName = "heema@heema";
+            userId = "62b69cb1-63f8-4406-b2c3-391989e44fa9";
+            userName = "heema@heema";
 
             base.OnActionExecuting(context);
         }

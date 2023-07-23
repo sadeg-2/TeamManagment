@@ -1,5 +1,6 @@
 ﻿@model TeamMemberViewModel
 
+<!--Content Popup-->
 <div class="modal fade" id="addTaskModel" tabindex="-1" data-bs-backdrop="static" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered mw-650px">
         <div class="modal-content rounded">
@@ -148,7 +149,7 @@
             {
                 url: "/Team/AssignTask/" + memberId,
                 success: function (result) {
-                    debugger
+                    console.log(result);
                     $(".modal-content").html(result);
                     $("#addTaskModel").modal("show");
                 }

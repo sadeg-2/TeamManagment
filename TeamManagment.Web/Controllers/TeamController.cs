@@ -1,8 +1,11 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using STD.Web.Controllers;
+using TeamManagment.Core.Dtos.Assignments;
+using TeamManagment.Core.Dtos.Tasks;
 using TeamManagment.Core.Dtos.Teams;
 using TeamManagment.Core.Enums;
 using TeamManagment.Core.Helper;
+using TeamManagment.Data.Models;
 using TeamManagment.Infrastructure.Services.Teams;
 
 namespace TeamManagment.Web.Controllers
@@ -91,7 +94,7 @@ namespace TeamManagment.Web.Controllers
         [HttpPost]
         public async Task<JsonResult> GetDataTableData(Request request)
         {
-            return Json(await _teamService.GetAllForDataTable(request));
+            return Json(await _teamService.GetAllForDataTable(request,userName));
         }
         [HttpGet]
         public IActionResult ProfileTeam(int id) {
@@ -137,11 +140,33 @@ namespace TeamManagment.Web.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> AssignTask(int id)
+        public  IActionResult AssignTask(int id)
         {
-            ViewData["id"] = id;
+            ViewData["MemberId"] = id;
             return PartialView("_AssignTask");
         }
+        [HttpPost]
+        public IActionResult AssignTask(CreateAssignmentsDto dto) {
+            if (userId == null)
+            {
+                return NotFound();
+            }
+            if (ModelState.IsValid)
+            {
+                try
+                {
+                    _teamMember.AssignTask(dto, userId);
+                }
+                catch (Exception)
+                {
+                    return Ok(Result.AddFailResult());
+                }
+                return Ok(Result.AddSuccessResult());
+            }
+            return RedirectToAction("Index");
+        }
+
+
 
 
 

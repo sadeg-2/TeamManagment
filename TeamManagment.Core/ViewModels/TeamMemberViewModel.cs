@@ -10,6 +10,7 @@ namespace TeamManagment.Core.ViewModels
     {
         public int Id { get; set; }
         public string UserName { get; set; }
+        public string MemberId { get; set; }
         public string MemberPosition { get; set; }
         public string JoinDate { get; set; }
 

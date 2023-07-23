@@ -1,4 +1,7 @@
 ﻿using System.Linq.Dynamic.Core;
+using TeamManagment.Core.Dtos.Assignments;
+using TeamManagment.Core.Enums;
+using MyTeam = TeamManagment.Core.Helper.Teams;
 
 namespace TeamManagment.Infrastructure.Services.Teams
 {
@@ -9,6 +12,49 @@ namespace TeamManagment.Infrastructure.Services.Teams
         {
             _db = db;
         }
+
+        public int AssignTask(CreateAssignmentsDto dto, string CreatorId)
+        {
+            var member = _db.TeamMembers.SingleOrDefault(x => !x.IsDelete && x.Id == dto.MemberId);
+            if (member == null)
+            {
+                throw new Exception();
+            }
+            var teamLeader = _db.TeamMembers.SingleOrDefault(x =>
+                            x.TeamId == member.TeamId &&
+                            x.MemberPosition == TeamUserType.TeamLeader &&
+                            x.MemberId == CreatorId 
+                            );
+            if (teamLeader == null)
+            {
+                throw new Exception();
+            }
+
+            var task = new MyTask
+            {
+                AssigneeId = member.MemberId,
+                CreatedAt = DateTime.Now,
+                CreatedBy = teamLeader.UserName,
+                DeadLine = dto.DeadLine,
+                Description = dto.Description ,
+                Title = dto.Title ,
+                IsCompleted = TaskStatee.UnCompleted
+            };
+            _db.Add(task);
+            _db.SaveChanges();
+
+            var assignment = new Assignment
+            {
+                TaskId = task.Id,
+                TeamId = member.TeamId,
+                CreatorId = teamLeader.Id,
+                CreatedBy = teamLeader.UserName
+            };
+            _db.Add(assignment);
+            _db.SaveChanges();
+            return assignment.Id;
+        }
+
         public async Task<TeamMember> CreateAsync(CreateMemberDto dto, string teamLeaderUserName /*team leader*/)
         {
             var member = await _db.Users.SingleOrDefaultAsync(x => x.UserName == dto.MemberUserName && !x.IsDelete);
@@ -63,6 +109,41 @@ namespace TeamManagment.Infrastructure.Services.Teams
             throw new NotImplementedException();
         }
 
+        public async Task<Response<AssignmentViewModel>> GetAllAssignmentData(Request request, int teamId, string userId)
+        {
+            Response<AssignmentViewModel> response = new Response<AssignmentViewModel>() { Draw = request.Draw };
+
+            var data = _db.Assignments.Include(x=> x.Task).Include(x=> x.Team).Where(x => x.TeamId == teamId || teamId == 0).AsQueryable();
+            response.RecordsTotal = data.Count();
+
+            if (request.Search.Value != null)
+            {
+                data = data.Where(
+                    x =>
+                    x.Task.Title.ToLower().Contains(request.Search.Value.ToLower())||
+                    x.Team.Name.ToLower().Contains(request.Search.Value.ToLower())
+                );
+            }
+            response.RecordsFiltered = await data.CountAsync();
+
+            //if (request.Order != null && request.Order.Count > 0)
+            //{
+            //    var sortColumn = request.Columns.ElementAt(request.Order.FirstOrDefault().Column).Name;
+            //    var sortDirection = request.Order.FirstOrDefault().Dir;
+            //    data = data.OrderBy(string.Concat(sortColumn, " ", sortDirection));
+            //}
+            response.Data = await data.Skip(request.Start).Take(request.Length).
+                Select(x => new AssignmentViewModel
+                {
+                    Id = x.Id,
+                    DeadLine = x.Task.DeadLine.ToShortDateString(),
+                    Status = x.Task.IsCompleted.ToString(),
+                    TeamName = x.Team.Name ,
+                    Title = x.Task.Title ,
+                }).ToListAsync();
+            return response;
+        }
+
         public async Task<Response<TeamMemberViewModel>> GetAllForDataTable(Request request , int teamId)
         {
             Response<TeamMemberViewModel> response = new Response<TeamMemberViewModel>() { Draw = request.Draw };
@@ -93,14 +174,50 @@ namespace TeamManagment.Infrastructure.Services.Teams
                     JoinDate = x.CreatedAt.ToShortDateString(),
                     MemberPosition = x.MemberPosition.ToString(),
                     UserName = x.UserName,
+                    MemberId = x.MemberId,
                     
                 }).ToListAsync();
             return response;
         }
 
+
+
         public UpdateMemberDto GetAsync(int memberID)
         {
             throw new NotImplementedException();
+        }
+
+        public ProfileTeamMemberViewModel GetMyProfile(string memberId)
+        {
+            var user = _db.Users.SingleOrDefault(x => x.Id == memberId);
+            var numOfTaskDone = _db.Assignments.Include(x => x.Task)
+                .Count(x=> !x.IsDelete && x.Task.AssigneeId == memberId &&
+                            x.Task.IsCompleted == TaskStatee.IsCompleted);
+            var numOfTeamJoined = _db.TeamMembers.Count(x=> !x.IsDelete);
+            var profile = new ProfileTeamMemberViewModel
+            {
+                FullName = user.FullName,
+                Id = user.Id,
+                Email = user.Email,
+                ImageUrl = user.ImageUrl,
+                NumOfTaskDone = numOfTaskDone,
+                NumOfTeamJoined = numOfTeamJoined,
+            };
+
+            return profile;
+        }
+
+        public List<MyTeam> GetMyTeam(string memberId)
+        {
+            if (memberId == null) {
+                throw new Exception();
+            }
+            var teams = _db.TeamMembers.Include(x => x.Team).Where(x => x.MemberId == memberId && !x.IsDelete).
+                Select(x => new MyTeam { 
+                        Id = x.TeamId,
+                        Name = x.Team.Name,
+                }).ToList();
+            return teams;
         }
 
         public Task<TeamMember> UpdateAsync(UpdateMemberDto dto, string username)
