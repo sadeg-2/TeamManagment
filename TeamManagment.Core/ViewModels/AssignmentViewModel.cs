@@ -16,5 +16,6 @@ namespace TeamManagment.Core.ViewModels
         public string TeamName { get; set; }
         public string Status { get; set; }
         public string DeadLine { get; set; }
+        public string Description { get; set; }
     }
 }

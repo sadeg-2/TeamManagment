@@ -1,0 +1,69 @@
+﻿
+<!--begin Content Popup-->
+<div class="modal fade" id="addSubmissionModel" tabindex="-1" data-bs-backdrop="static" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered mw-650px">
+        <div class="modal-content rounded">
+        </div>
+    </div>
+</div>
+<!--End Content Popup-->
+
+<div id="kt_app_content_container" class="d-flex flex-wrap flex-sm-nowrap">
+    <div class="card mb-6 mb-xl-9">
+        <div class="card-header border-0 pt-5">
+            <h3 class="card-title align-items-start flex-column">
+                <span class="card-label fw-bold fs-3 mb-1"> Assignment Submission Managment </span>
+            </h3>
+            <!--begin::Actions-->
+            <div style="padding-left:350px" class="d-flex align-items-center gap-2 gap-lg-3">
+                <div class="card-toolbar border-0 " data-bs-toggle="tooltip" data-bs-placement="top" data-bs-trigger="hover">
+                    <a id="addSubmissionsBtn" class="btn btn-sm btn-light btn-active-primary">
+                        <!--begin::Svg Icon | path: icons/duotune/arrows/arr075.svg-->
+                        <span class="svg-icon svg-icon-3">
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <rect opacity="0.5" x="11.364" y="20.364" width="16" height="2" rx="1" transform="rotate(-90 11.364 20.364)" fill="currentColor" />
+                                <rect x="4.36396" y="11.364" width="16" height="2" rx="1" fill="currentColor" />
+                            </svg>
+                        </span>
+                        <!--end::Svg Icon-->
+                        Add New Submissions
+                    </a>
+                </div>
+                <!--end::Primary button-->
+
+            </div>
+            <!--end::Actions-->
+        </div>
+        <div class="card-body py-4">
+            <div class="table-responsive">
+                <table id="kt_datatable_dom_positioning" class="table table-row-dashed table-row-gray-300 align-middle gs-0 gy-4">
+                    <thead>
+                        <tr class="fw-bold fs-6 text-gray-800 px-7">
+                            <th>User Name</th>
+                            <th class="text-center">Member Position</th>
+                            <th class="text-center">Join Date</th>
+                            <th class="text-center">العمليات</th>
+                        </tr>
+                    </thead>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+    $(document).ready(function () {
+        $("#addSubmissionsBtn").on("click", function () {
+            $.ajax(
+                {
+                    url: "/TeamMember/CreateSubmission/",
+                    success: function (result) {
+                        console.log(result);
+                        $(".modal-content").html(result);
+                        $("#addSubmissionModel").modal("show");
+                    }
+                });
+            return false;
+        });
+    });
+</script>

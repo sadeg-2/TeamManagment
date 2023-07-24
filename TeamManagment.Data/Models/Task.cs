@@ -23,6 +23,7 @@ namespace TeamManagment.Data.Models
         public User Assignee { get; set; }
         public string AssigneeId { get; set; }
 
+        public bool relatedWithAssignment { get; set; }
         public List<Comment> Comments { get; set; }
     }
 }

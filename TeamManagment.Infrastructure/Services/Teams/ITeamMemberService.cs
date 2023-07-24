@@ -21,6 +21,7 @@ namespace TeamManagment.Infrastructure.Services.Teams
 
         ProfileTeamMemberViewModel GetMyProfile(string memberId);
 
+        AssignmentViewModel GetAssignment(int id);
         List<MyTeam> GetMyTeam(string memberId);
 
     }

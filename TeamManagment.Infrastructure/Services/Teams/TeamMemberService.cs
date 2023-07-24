@@ -38,7 +38,9 @@ namespace TeamManagment.Infrastructure.Services.Teams
                 DeadLine = dto.DeadLine,
                 Description = dto.Description ,
                 Title = dto.Title ,
-                IsCompleted = TaskStatee.UnCompleted
+                IsCompleted = TaskStatee.UnCompleted,
+                relatedWithAssignment = true ,
+
             };
             _db.Add(task);
             _db.SaveChanges();
@@ -180,7 +182,24 @@ namespace TeamManagment.Infrastructure.Services.Teams
             return response;
         }
 
+        public AssignmentViewModel GetAssignment(int id)
+        {
+            var assignment = _db.Assignments.Include(x=> x.Task).Include(x=> x.Team).SingleOrDefault(x => !x.IsDelete && x.Id == id);
+            if (assignment == null)
+            {
+                throw new Exception();
+            }
+            var assignmentVm = new AssignmentViewModel { 
+                DeadLine = assignment.Task.DeadLine.ToLongDateString(),
+                Description = assignment.Task.Description ,
+                Id = assignment.Id ,
+                Status = assignment.Task.IsCompleted.ToString(),
+                Title = assignment.Task.Title ,
+                TeamName = assignment.Team.Name
+            };
 
+            return assignmentVm;
+        }
 
         public UpdateMemberDto GetAsync(int memberID)
         {

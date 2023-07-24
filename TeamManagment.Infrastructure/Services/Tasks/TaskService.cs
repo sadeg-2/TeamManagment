@@ -16,6 +16,7 @@ namespace TeamManagment.Infrastructure.Services.Tasks
         public async Task<MyTask> CreateAsync(CreateTaskDto dto)
         {
             var task = _mapper.Map<MyTask>(dto);
+            task.relatedWithAssignment = false;
             task.CreatedAt = DateTime.Now;
             task.CreatedBy = "Me";
             task.IsCompleted = TaskStatee.UnCompleted;
@@ -41,7 +42,7 @@ namespace TeamManagment.Infrastructure.Services.Tasks
         {
             var c = request;
             Response<TaskViewModel> response = new Response<TaskViewModel>() { Draw = request.Draw };
-            var data = _db.Tasks.Where(x => x.AssigneeId == AssigneeId && (x.IsCompleted == filter || filter == TaskStatee.None ) && !x.IsDelete).AsQueryable();
+            var data = _db.Tasks.Where(x => x.AssigneeId == AssigneeId && (x.IsCompleted == filter || filter == TaskStatee.None ) && !x.IsDelete && !x.relatedWithAssignment).AsQueryable();
 
             response.RecordsTotal = data.Count();
             

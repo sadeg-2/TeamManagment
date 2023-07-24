@@ -144,26 +144,17 @@
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script>
 	$(document).ready(function () {
-		// Handle link click events
 		$("ul.nav li.nav-item a").on("click", function (e) {
-			e.preventDefault(); // Prevent default link behavior
-
-			var value = $(this).text(); // Get the text of the clicked link
-			// Remove active class from all links
+			e.preventDefault(); 
+			var value = $(this).text();
 			$("ul.nav li.nav-item a").removeClass("active");
-
-			// Add active class to the clicked link
 			$(this).addClass("active");
-
-			// AJAX request to send the text value to the server-side action method
 			$.ajax({
-				url: "/Team/LoadPartialView", // Replace with the actual URL or route to the action method
-				type: "POST", // Or "GET" depending on your server-side implementation
-				data: { target: value }, // Pass the text value to the action method
+				url: "/Team/LoadPartialView", 
+				type: "POST", 
+				data: { target: value }, 
 				success: function (response) {
-					// Handle the response here (e.g., update the card content)
 					$("#cardContent").empty().html(response);
-
 				},
 				error: function () {
 					console.log("Error occurred while loading content.");
