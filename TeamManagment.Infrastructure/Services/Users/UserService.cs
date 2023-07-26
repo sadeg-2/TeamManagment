@@ -123,5 +123,8 @@ namespace TeamManagment.Infrastructure.Services.Users
             _db.SaveChanges();
             return user.Id;
         }
+        public User GetUser(string id) {
+            return _db.Users.Single(x => x.Id == id);
+        }
     }
 }

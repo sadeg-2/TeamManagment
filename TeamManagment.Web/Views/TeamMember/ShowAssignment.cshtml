@@ -4,8 +4,9 @@
 <div id="kt_app_toolbar" class="app-toolbar py-3 py-lg-6">
 </div>
 <!--end::Toolbar-->
+<div id="currentID" data-id="@Model.Id"></div>
 <!--begin::Content container-->
-<div id="kt_app_content_container" class="app-container container-xxl" data-id="">
+<div id="kt_app_content_container" class="app-container container-l">
 	<!--begin::Navbar-->
 	<div class="card mb-5 mb-xxl-8">
 		<div class="card-body pt-9 pb-0">
@@ -83,7 +84,6 @@
 									</a>
 								</span>
 							</div>
-
 							<div class="d-flex flex-wrap fw-semibold fs-12 mb-4 pe-2">
 								<!-- "Task Title" with bigger font size -->
 								<span style="font-size: 16px;">Deadline :</span>
@@ -140,6 +140,7 @@
 				data: { target: value },
 				success: function (response) {
 					$("#cardContent").empty().html(response);
+
 				},
 				error: function () {
 					console.log("Error occurred while loading content.");

@@ -149,7 +149,6 @@
             {
                 url: "/Team/AssignTask/" + memberId,
                 success: function (result) {
-                    console.log(result);
                     $(".modal-content").html(result);
                     $("#addTaskModel").modal("show");
                 }

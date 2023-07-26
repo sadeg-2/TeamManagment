@@ -1,8 +1,14 @@
-﻿
+﻿@{
+    var imageUrl = ViewData["Image"] as string;
+    var userName = ViewData["UserName"] as string;
+}
+
+
 <!--begin::Row-->
 <div class="row g-5 g-xxl-8">
 	<!--begin::Col-->
 	<div class="col-xl-12">
+		<div id="commentsContainer" style="max-height: 400px; overflow-y:auto"></div>
 		<!--begin::Feeds Widget 1-->
 		<div class="card mb-5 mb-xxl-8" style="">
 			<!--begin::Body-->
@@ -12,14 +18,13 @@
 					<!--begin::User-->
 					<div class="d-flex align-items-center flex-grow-1">
 						<!--begin::Avatar-->
-						<div class="symbol symbol-45px me-5">
-							<img src="~/assets/media/avatars/300-6.jpg" alt="" />
+						<div id="IdImage" class="symbol symbol-45px me-5">
+							<img src="~/images/@imageUrl" />
 						</div>
 						<!--end::Avatar-->
 						<!--begin::Info-->
 						<div class="d-flex flex-column">
-							<a href="#" class="text-gray-900 text-hover-primary fs-6 fw-bold">Grace Green</a>
-							<span class="text-gray-400 fw-bold">PHP, SQLite, Artisan CLI</span>
+							<a href="#" class="text-gray-900 text-hover-primary fs-6 fw-bold">@userName</a>
 						</div>
 						<!--end::Info-->
 					</div>
@@ -32,9 +37,9 @@
 				<!--end::Separator-->
 				<!--begin::Reply input-->
 				<form class="position-relative mb-6">
-					<textarea class="form-control border-0 p-0 pe-10 resize-none min-h-25px" data-kt-autosize="true" rows="1" placeholder="Reply.."></textarea>
+					<textarea id="comments" class="form-control border-0 p-0 pe-10 resize-none min-h-25px" data-kt-autosize="true" rows="1" placeholder="Reply.."></textarea>
 					<div class="position-absolute top-0 end-0 me-n5">
-						<a href="#">
+						<a href="#" id="reply">
 							<span class="btn btn-icon btn-sm btn-active-color-primary pe-0 me-2">
 								<!--begin::Svg Icon | path: icons/duotune/communication/com008.svg-->
 								<span class="svg-icon svg-icon-2x mb-3">
@@ -45,7 +50,6 @@
 								<!--end::Svg Icon-->
 							</span>
 						</a>
-						
 					</div>
 				</form>
 				<!--edit::Reply input-->
@@ -53,39 +57,193 @@
 			<!--end::Body-->
 		</div>
 		<!--end::Feeds Widget 1-->
-		<!--begin::Feeds Widget 3-->
-		<div class="card mb-5 mb-xxl-8">
-			<!--begin::Body-->
-			<div class="card-body pb-0">
-				<!--begin::Header-->
-				<div class="d-flex align-items-center mb-3">
-					<!--begin::User-->
-					<div class="d-flex align-items-center flex-grow-1">
-						<!--begin::Avatar-->
-						<div class="symbol symbol-45px me-5">
-							<img src="~/assets/media/avatars/300-21.jpg" alt="" />
-						</div>
-						<!--end::Avatar-->
-						<!--begin::Info-->
-						<div class="d-flex flex-column">
-							<a href="#" class="text-gray-900 text-hover-primary fs-6 fw-bold">Carles Nilson</a>
-							<span class="text-gray-400 fw-bold">Yestarday at 5:06 PM</span>
-						</div>
-						<!--end::Info-->
-					</div>
-					<!--end::User-->
-				</div>
-				<!--end::Header-->
-				<!--begin::Post-->
-				<div class="mb-7">
-					<div class="text-gray-800 mb-5">Outlines keep you honest. They stop you from indulging in poorly thought-out metaphors about driving and keep you focused on the overall structure of your post</div>
-				</div>
-				<!--end::Post-->
-			</div>
-			<!--end::Body-->
-		</div>
-		<!--end::Feeds Widget 3-->
+
 	</div>
 	<!--end::Col-->
 </div>
 <!--end::Row-->
+<link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css">
+<script type="text/javascript" src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+
+<script>
+	document.getElementById("reply").addEventListener("click", function () {
+		var textarea = document.getElementById("comments");
+		var divElement = document.getElementById("currentID");
+		var idValue = divElement.getAttribute("data-id");
+		//alert("The text is: " + textarea.value);
+		// Create data object with the content from the textarea
+		var data = {
+			Message: textarea.value,
+			AssignmentID: idValue,
+		};
+		//alert("1");
+		$.ajax({
+			url: "/TeamMember/AddComment",
+			type: 'POST',
+			data: data,
+			dataType: "json",
+			success: function (response) {
+				// Handle the response from the server if needed
+				const greenBackground = "linear-gradient(to right, #00b09b, #96c93d)";
+				showToastWithBackground("Add Comment Successfully", greenBackground);
+				commentsContainer.appendChild(createViewModelCard(response));
+				textarea.value = '';
+				scrollToBottomContainer();
+				scrollToBottom();
+			},
+			error: function (xhr, status, error) {
+				const redBackground = "linear-gradient(to right, #ff6e7f, #bfe9ff)";
+				showToastWithBackground("Failed Added Comment", redBackground);
+			}
+		});
+	});
+	function showToastWithBackground(text, background) {
+		Toastify({
+			text: text,
+			duration: 3000,
+			newWindow: true,
+			close: true,
+			gravity: "top",
+			position: "right",
+			stopOnFocus: true,
+			style: {
+				background: background,
+			},
+			onClick: function () { }
+		}).showToast();
+	}
+	function getCommentsFromServer() {
+		var divElement = document.getElementById("currentID");
+		var idValue = divElement.getAttribute("data-id");
+		$.ajax({
+			url: "/TeamMember/GetComments", // Replace this with the actual server endpoint to fetch comments
+			type: 'GET',
+			data:{
+				assignmentId: idValue,
+			},
+			dataType: "json",
+			success: function (response) {
+				displayViewModels(response);
+				scrollToBottom();
+			},
+			error: function (xhr, status, error) {
+				console.error("Failed to fetch comments: " + error);
+			}
+		});
+	}
+	function displayViewModels(viewModels) {
+		const commentsContainer = document.getElementById("commentsContainer");
+
+		// Clear the existing content in the container
+		commentsContainer.innerHTML = '';
+
+		viewModels.forEach(viewModel => {
+			const viewModelDiv = createViewModelCard(viewModel);
+			commentsContainer.appendChild(viewModelDiv);
+		});
+		scrollToBottom();
+		scrollToBottomContainer();
+	}
+	function createViewModelCard(viewModel) {
+		// Create the main div for the view model
+		const viewModelDiv = document.createElement('div');
+		viewModelDiv.className = "card mb-5 mb-xxl-8";
+
+		// Create the inner HTML for the view model
+		const innerHTML = `
+			<div class="card-body pb-0">
+				<div class="d-flex align-items-center mb-3">
+					<div class="d-flex align-items-center flex-grow-1">
+						<div class="symbol symbol-45px me-5">
+							<img src="../../Images/${viewModel.imageUrl}" alt="" />
+						</div>
+						<div class="d-flex flex-column">
+							<a href="#" class="text-gray-900 text-hover-primary fs-6 fw-bold">${viewModel.userName}</a>
+							<span class="text-gray-400 fw-bold">${viewModel.createdAt}</span>
+						</div>
+					</div>
+					<button class="btn btn-sm btn-danger ms-2" onclick="removeViewModel(this)" data-viewmodel-id="${viewModel.id}">Remove</button>
+				</div>
+				<div class="mb-7">
+					<div class="text-gray-800 mb-5">${viewModel.message}</div>
+				</div>
+			</div>`;
+
+		// Set the innerHTML of the main div
+		viewModelDiv.innerHTML = innerHTML;
+
+		return viewModelDiv;
+	}
+	function removeViewModel(button) {
+		const card = button.closest('.card'); // Get the parent card element
+		const viewModelId = button.getAttribute('data-viewmodel-id'); // Get the ID from the data attribute
+
+		// Send a POST request to remove the item from the server
+		$.ajax({
+			url: "/TeamMember/RemoveItem", // Replace this with the actual server endpoint to remove the item
+			type: 'POST',
+			data: { itemId: viewModelId }, // Send the item ID as data in the request
+			dataType: "json",
+			success: function (response) {
+				const background = "linear-gradient(to right, #00b09b, #96c93d)";
+				// If the removal was successful, remove the card from the DOM
+				card.remove();
+				showToastWithBackground("Remove Successflly",background);
+				scrollToBottomContainer();
+				scrollToBottom();
+			},
+			error: function (xhr, status, error) {
+				const background = "linear-gradient(to right, #FF0000, #FF6666)";
+				showToastWithBackground("Remove Failed", background);
+			}
+		});
+
+	}
+	getCommentsFromServer();
+	function scrollToBottom() {
+		const commentsContainer = document.getElementById("commentsContainer");
+		const scrollHeight = commentsContainer.scrollHeight;
+		const duration = 500; // Animation duration in milliseconds
+		const startTime = performance.now();
+
+		function animateScroll(timestamp) {
+			const currentTime = timestamp - startTime;
+			const progress = currentTime / duration;
+			const easeInOutProgress = (1 - Math.cos(progress * Math.PI)) / 2;
+			commentsContainer.scrollTop = easeInOutProgress * scrollHeight;
+
+			if (currentTime < duration) {
+				requestAnimationFrame(animateScroll);
+			} else {
+				commentsContainer.scrollTop = scrollHeight;
+			}
+		}
+
+		requestAnimationFrame(animateScroll);
+	}
+	function scrollToBottomContainer() {
+		const commentsContainer = document.getElementById("commentsContainer");
+		const scrollHeight = commentsContainer.scrollHeight;
+		const duration = 500; // Animation duration in milliseconds
+		const startTime = performance.now();
+
+		function animateScroll(timestamp) {
+			const currentTime = timestamp - startTime;
+			const progress = currentTime / duration;
+			const easeInOutProgress = (1 - Math.cos(progress * Math.PI)) / 2;
+			commentsContainer.scrollTop = easeInOutProgress * scrollHeight;
+
+			if (currentTime < duration) {
+				requestAnimationFrame(animateScroll);
+			} else {
+				commentsContainer.scrollTop = scrollHeight;
+			}
+		}
+
+		requestAnimationFrame(animateScroll);
+	}
+
+
+</script>
+

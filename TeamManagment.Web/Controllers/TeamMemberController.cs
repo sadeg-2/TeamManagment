@@ -1,17 +1,27 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.Build.Execution;
 using STD.Web.Controllers;
 using TeamManagment.Core.Dtos.Assignments;
+using TeamManagment.Core.Dtos.Comments;
 using TeamManagment.Core.Helper;
+using TeamManagment.Core.ViewModels;
+using TeamManagment.Data.Models;
+using TeamManagment.Infrastructure.Services.Comments;
 using TeamManagment.Infrastructure.Services.Teams;
+using TeamManagment.Infrastructure.Services.Users;
 
 namespace TeamManagment.Web.Controllers
 {
     public class TeamMemberController : BaseController
     {
         private readonly ITeamMemberService _memberService;
-        public TeamMemberController(ITeamMemberService memberService)
+        private readonly ICommentService _commetnService;
+        private readonly IUserService _userService;
+        public TeamMemberController(ITeamMemberService memberService,ICommentService commetnService,IUserService userService)
         {
             _memberService = memberService;
+            _commetnService = commetnService;
+            _userService = userService;
         }
         public IActionResult MyProfile()
         {
@@ -33,8 +43,9 @@ namespace TeamManagment.Web.Controllers
         }
         // id assignment
         public IActionResult ShowAssignment(int id) {
-
-
+            var user = _userService.GetUser(userId);
+            ViewData["Image"] = user.ImageUrl;
+            ViewData["UserName"] = userName;
             return View(_memberService.GetAssignment(id));
         }
         [HttpGet]
@@ -49,9 +60,28 @@ namespace TeamManagment.Web.Controllers
         }
         public ActionResult LoadPartialView(string target)
         {
+            var user = _userService.GetUser(userId);
+            ViewData["Image"] = user.ImageUrl;
+            ViewData["UserName"] = userName;
             string partialViewName = "_" + target;
 
             return PartialView(partialViewName);
+        }
+        [HttpPost]
+        public JsonResult AddComment([FromForm]CreateCommentDto dto) {
+            dto.WriterUserName = userName;
+            dto.WriterId = userId;
+            return Json(_commetnService.CreateComment(dto));
+        }
+
+        public  JsonResult GetComments(int assignmentId) {
+            var data = _commetnService.GetAllComments(assignmentId);
+            return Json(data);
+        }
+
+        public JsonResult RemoveItem(int itemId) {
+            
+            return Json(_commetnService.Delete(itemId));
         }
 
     }
