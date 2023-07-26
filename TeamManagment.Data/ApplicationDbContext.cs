@@ -16,6 +16,9 @@ namespace TeamManagment.Web.Data
         public DbSet<TeamMember> TeamMembers { get; set; }
         public DbSet<Assignment> Assignments { get; set; }
         public DbSet<MyTask> Tasks { get; set; }
+        public DbSet<Submission> Submissions { get; set; }
+        public DbSet<Attatchment> Attatchments { get; set; }
+        public DbSet<Review> Reviews { get; set; }
         protected override void OnModelCreating(ModelBuilder builder)
         {
             base.OnModelCreating(builder);

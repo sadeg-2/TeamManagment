@@ -1,4 +1,5 @@
-﻿using System.Linq.Dynamic.Core;
+﻿using System.Linq;
+using System.Linq.Dynamic.Core;
 using TeamManagment.Core.Enums;
 
 namespace TeamManagment.Infrastructure.Services.Teams

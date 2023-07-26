@@ -166,6 +166,11 @@ namespace TeamManagment.Web.Controllers
             return RedirectToAction("Index");
         }
 
+        public IActionResult MyColleagues() { 
+        
+            return View();
+        }
+
 
 
 

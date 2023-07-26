@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using TeamManagment.Web.Data;
 
@@ -11,9 +12,10 @@ using TeamManagment.Web.Data;
 namespace TeamManagment.Web.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20230726085915_add_submission_and_attachment")]
+    partial class add_submission_and_attachment
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -267,55 +269,6 @@ namespace TeamManagment.Web.Data.Migrations
                     b.HasIndex("TaskId");
 
                     b.ToTable("Comments");
-                });
-
-            modelBuilder.Entity("TeamManagment.Data.Models.Review", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
-
-                    b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("CreatedBy")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<bool>("IsDelete")
-                        .HasColumnType("bit");
-
-                    b.Property<string>("Message")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<byte>("Rating")
-                        .HasColumnType("tinyint");
-
-                    b.Property<string>("ReciverId")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("ReviewerId")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("ReviewrId")
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<DateTime?>("UpdatedAt")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("UpdatedBy")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("ReviewrId");
-
-                    b.ToTable("Reviews");
                 });
 
             modelBuilder.Entity("TeamManagment.Data.Models.Submission", b =>
@@ -680,15 +633,6 @@ namespace TeamManagment.Web.Data.Migrations
                         .IsRequired();
 
                     b.Navigation("Task");
-                });
-
-            modelBuilder.Entity("TeamManagment.Data.Models.Review", b =>
-                {
-                    b.HasOne("TeamManagment.Data.Models.User", "Reviewr")
-                        .WithMany()
-                        .HasForeignKey("ReviewrId");
-
-                    b.Navigation("Reviewr");
                 });
 
             modelBuilder.Entity("TeamManagment.Data.Models.Submission", b =>
