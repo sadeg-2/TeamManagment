@@ -117,6 +117,12 @@ namespace TeamManagment.Web.Controllers
 
             return Json(await _teamMember.GetAllForDataTable(request , (int)teamId ));
         }
+        [HttpPost]
+        public async Task<JsonResult> GetDataTableColleagues(Request request,int teamId) {
+            return Json(await _teamService.GetDataTableColleagues(request,teamId,userId));
+        }
+
+
 
 
         [HttpPost]
@@ -167,8 +173,7 @@ namespace TeamManagment.Web.Controllers
         }
 
         public IActionResult MyColleagues() { 
-        
-            return View();
+            return View(_teamMember.GetMyTeam(userId));
         }
 
 

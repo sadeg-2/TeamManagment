@@ -123,7 +123,6 @@ namespace TeamManagment.Infrastructure.Services.Teams
                 throw new Exception();
             }
             return _mapper.Map<TeamViewModel>(team);
-
         }
         public async Task<Team> UpdateAsync(UpdateTeamDto dto, string username)
         {
@@ -142,5 +141,47 @@ namespace TeamManagment.Infrastructure.Services.Teams
             return team;
 
         }
+
+        public async Task<Response<ColleagueViewModel>> GetDataTableColleagues(Request request, int teamId, string userId)
+        {
+            Response<ColleagueViewModel> response = new Response<ColleagueViewModel>() { Draw = request.Draw };
+
+            var data = _db.TeamMembers.Include(x => x.Team).Include(x => x.Member).Where(x => (x.TeamId == teamId && !x.Team.IsDelete)
+                                                                                           && !x.Member.IsDelete && !x.IsDelete).AsQueryable();
+            response.RecordsTotal = data.Count();
+
+            if (request.Search.Value != null)
+            {
+                //data = data.Where(
+                //    x =>
+                //    x.Task.Title.ToLower().Contains(request.Search.Value.ToLower()) ||
+                //    x.Team.Name.ToLower().Contains(request.Search.Value.ToLower())
+                //);
+            }
+            response.RecordsFiltered = await data.CountAsync();
+
+            //if (request.Order != null && request.Order.Count > 0)
+            //{
+            //    var sortColumn = request.Columns.ElementAt(request.Order.FirstOrDefault().Column).Name;
+            //    var sortDirection = request.Order.FirstOrDefault().Dir;
+            //    data = data.OrderBy(string.Concat(sortColumn, " ", sortDirection));
+            //}
+               
+            response.Data = await data.Skip(request.Start).Take(request.Length).
+                    Select(x => new ColleagueViewModel
+                    {
+                        Id = x.MemberId,
+                        FullName = x.Member.FullName,
+                        ImageUrl = x.Member.ImageUrl,
+                        MyRating = (int?)(_db.Reviews.Where(x => x.ReviewerId == userId).Average(x => x.Rating)) ?? 0,
+                        Position = x.MemberPosition.ToString(),
+                        TeamId = x.TeamId,
+                    }).ToListAsync();
+            
+            return response;
+        }
+
+
+
     }
 }

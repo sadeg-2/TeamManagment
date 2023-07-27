@@ -62,7 +62,7 @@
                     }
                 },
                 {
-                    data: null, name: "Actions", orderable: false, className: "dt-center align-middle",
+                    data: null, name: "Actions", orderable: false, className: "dt-right align-middle",
                     render: function (data) {
                         return "<div data-EditId-id='" + data.id + "'class='btn updateMoodel' type = 'button' data-bs-toggle='modal' data-bs-target='#userEditModel' >" +
                             "<span class='svg-icon svg-icon-muted svg-icon-2hx'>" +

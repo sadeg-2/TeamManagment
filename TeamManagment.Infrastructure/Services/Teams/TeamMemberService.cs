@@ -115,7 +115,7 @@ namespace TeamManagment.Infrastructure.Services.Teams
         {
             Response<AssignmentViewModel> response = new Response<AssignmentViewModel>() { Draw = request.Draw };
 
-            var data = _db.Assignments.Include(x=> x.Task).Include(x=> x.Team).Where(x => x.TeamId == teamId || teamId == 0).AsQueryable();
+            var data = _db.Assignments.Include(x=> x.Task).Include(x=> x.Team).Where(x => (x.TeamId == teamId || teamId == 0)&&(!x.Team.IsDelete)).AsQueryable();
             response.RecordsTotal = data.Count();
 
             if (request.Search.Value != null)
@@ -243,5 +243,8 @@ namespace TeamManagment.Infrastructure.Services.Teams
         {
             throw new NotImplementedException();
         }
+        
+
+    
     }
 }
