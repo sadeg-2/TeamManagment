@@ -18,8 +18,8 @@ namespace TeamManagment.Infrastructure.Services.Reviews
 			{
 				throw new Exception();
 			}
-			var review = new Review { 
-				ReviewerId = dto.ReviewerId,
+			var review = new Review {
+                ReviewrId = dto.ReviewerId,
 				Message = dto.Message,
 				Rating = dto.Rating,
 				ReciverId = dto.ReciverId,

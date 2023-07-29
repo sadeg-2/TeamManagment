@@ -2,6 +2,7 @@
 using STD.Web.Controllers;
 using TeamManagment.Core.Dtos.Assignments;
 using TeamManagment.Core.Dtos.Comments;
+using TeamManagment.Core.Dtos.Review;
 using TeamManagment.Core.Helper;
 using TeamManagment.Infrastructure.Services.Comments;
 using TeamManagment.Infrastructure.Services.Reviews;
@@ -95,9 +96,35 @@ namespace TeamManagment.Web.Controllers
             return Json(_commetnService.Delete(itemId));
         }
 
-        public async Task<JsonResult> GetDataTableReview(Request request ,string memberId)
+        public async Task<JsonResult> GetDataTableReview(Request request, string memberId)
         {
-            return Json(await _reviewService.GetAllReviewDatatable(request,memberId));
+            return Json(await _reviewService.GetAllReviewDatatable(request, memberId));
         }
+        [HttpGet]
+        public IActionResult CreateReview(string reciverId)
+        {
+            ViewData["ReciverId"] = reciverId;
+            return PartialView("_FeedBack");
+        }
+        [HttpPost]
+        public IActionResult CreateReviews(CreateReviewDto dto)
+        {
+            if (ModelState.IsValid)
+            {
+                try
+                {
+                    dto.ReviewerId = userId;
+                    _reviewService.CreateReview(dto);
+                    return Ok(Result.AddSuccessResult());
+                }
+                catch (Exception)
+                {
+                    return BadRequest();
+                }
+            }
+            return BadRequest();
+        }
+
+
     }
 }

@@ -11,13 +11,14 @@ namespace TeamManagment.Data.Models
     {
         public int Id { get; set; }
         public string Message { get; set; }
-        [Range(0,100)]
+        [Range(0, 100)]
         public byte Rating { get; set; }
         public string ReciverId { get; set; }
 
         // relations
         public User Reviewr { get; set; }
-        public string ReviewerId { get; set; }
-        
+        public string ReviewrId { get; set; }
+        public string? ReviewerId { get; set; }
+
     }
 }

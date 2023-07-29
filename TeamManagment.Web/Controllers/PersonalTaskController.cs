@@ -1,11 +1,9 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using STD.Web.Controllers;
 using TeamManagment.Core.Dtos.Tasks;
-using TeamManagment.Core.Dtos.User;
 using TeamManagment.Core.Enums;
 using TeamManagment.Core.Helper;
 using TeamManagment.Infrastructure.Services.Tasks;
-using static Microsoft.EntityFrameworkCore.DbLoggerCategory.Database;
 
 namespace TeamManagment.Web.Controllers
 {

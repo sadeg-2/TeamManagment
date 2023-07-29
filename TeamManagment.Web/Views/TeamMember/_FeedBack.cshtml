@@ -1,0 +1,56 @@
+﻿@model CreateReviewDto
+
+<div class="modal-header pb-0 border-0 justify-content-end">
+	<div class="btn btn-sm btn-icon btn-active-color-primary" data-bs-dismiss="modal">
+		<span class="svg-icon svg-icon-1">
+			<svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+				<rect opacity="0.5" x="6" y="17.3137" width="16" height="2" rx="1" transform="rotate(-45 6 17.3137)" fill="currentColor" />
+				<rect x="7.41422" y="6" width="16" height="2" rx="1" transform="rotate(45 7.41422 6)" fill="currentColor" />
+			</svg>
+		</span>
+	</div>
+</div>
+<div class="modal-body scroll-y px-10 px-lg-15 pt-0 pb-15">
+	<form id="kt_modal_new" class="form" asp-action="CreateReviews"  asp-controller="TeamMember" enctype="multipart/form-data">
+		<div asp-validation-summary="ModelOnly" class="text-danger"></div>
+		<input asp-for="ReciverId" type="hidden" value="@ViewData["ReciverId"]" />
+		<div class="mb-13 text-center">
+			<h1 class="mb-3">Add FeedBack</h1>
+		</div>
+		<div class="row g-p mb-8">
+			<div class="col-md-9 fv-row">
+				<label asp-for="Message" class="d-flex align-items-center fs-6 fw-semibold mb-2">
+					<span class="required">Message</span>
+				</label>
+				<input asp-for="Message" type="text" class="form-control form-control-solid" placeholder="Enter FeedBack " />
+				<span asp-validation-for="Message" class="text-danger"></span>
+			</div>
+		</div>
+		<div class="row g-p mb-8">
+			<div class="col-md-9 fv-row">
+				<label asp-for="Rating" class="d-flex align-items-center fs-6 fw-semibold mb-2">
+					<span class="required">Rating</span>
+				</label>
+				<input asp-for="Rating" type="range" id="rating"  min="0" max="100" step="1" value="0" oninput="updateSliderValue()">
+				<span id="ratingValue">0%</span>
+				<span asp-validation-for="Rating" class="text-danger"></span>
+			</div>
+		</div>
+		<br>
+		<br>
+		<div class="text-center">
+			<input type="submit" value="Submits" class="btn btn-primary" />
+			<button type="reset" data-bs-dismiss="modal" class="btn btn-light me-3">Cancel</button>
+		</div>
+	</form>
+</div>
+<script>
+	function updateSliderValue() {
+		const slider = document.getElementById("rating");
+		const sliderValueSpan = document.getElementById("ratingValue");
+		sliderValueSpan.textContent = slider.value + "%";
+	}
+</script>
+
+
+

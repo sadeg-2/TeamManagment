@@ -1,5 +1,5 @@
 ﻿<!--Content Popup-->
-<div class="modal fade" id="addTaskModel" tabindex="-1" data-bs-backdrop="static" aria-hidden="true">
+<div class="modal fade" id="feedbackModel" tabindex="-1" data-bs-backdrop="static" aria-hidden="true">
 	<div class="modal-dialog modal-dialog-centered mw-650px">
 		<div class="modal-content rounded">
 		</div>
@@ -14,7 +14,7 @@
 			<span class="card-label fw-bold fs-3 mb-1">Review Member</span>
 		</h3>
 		<div class="card-toolbar" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-trigger="hover" title="Provide your feedback">
-			<a href="#" class="btn btn-sm btn-light btn-active-primary" data-bs-toggle="modal" data-bs-target="#kt_modal_invite_friends">
+			<div class="btn addFeedBack" type="button" data-bs-toggle="modal" data-bs-target="#feedbackModel">
 				<!--begin::Svg Icon | path: icons/duotune/arrows/arr075.svg-->
 				<span class="svg-icon svg-icon-3">
 					<svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -23,7 +23,7 @@
 					</svg>
 				</span>
 				<!--end::Svg Icon-->feedback
-			</a>
+			</div>
 		</div>
 	</div>
 	<!--end::Header-->
@@ -51,6 +51,31 @@
 	<!--begin::Body-->
 </div>
 <!--end::Tables Widget 9-->
+
+<script src="~/lib/jquery/dist/jquery.min.js"></script>
+<script src="~/lib/jquery/dist/jquery.js"></script>
+<script src="~/datatable/Review.js"></script>
+<script>
+	$(document).on("click", ".addFeedBack", function (e) {
+		e.preventDefault();
+		const divElement = document.getElementById("kt_app_content_container");
+		const dataId = divElement.getAttribute("data-id");
+		$.ajax({
+			url: "/TeamMember/CreateReview/",
+			data:{
+				reciverId: dataId
+			},
+			success: function (result) {
+				console.log(result);
+				$(".modal-content").html(result);
+				$("#feedbackModel").modal("show");
+			}
+		});
+		return false;
+	});	
+</script>	
+
+
 
 
 

@@ -9,7 +9,7 @@ namespace TeamManagment.Core.Dtos.Review
         [Required]
         [Range(0, 100)]
         public byte Rating { get; set; }
-        public string ReciverId { get; set; }
-        public string ReviewerId { get; set; }
+        public string? ReciverId { get; set; }
+        public string? ReviewerId { get; set; }
     }
 }

@@ -1,7 +1,4 @@
-﻿using System;
-using Microsoft.EntityFrameworkCore.Migrations;
-
-#nullable disable
+﻿using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace TeamManagment.Web.Data.Migrations
 {
@@ -19,7 +16,6 @@ namespace TeamManagment.Web.Data.Migrations
                     Rating = table.Column<byte>(type: "tinyint", nullable: false),
                     ReciverId = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     ReviewrId = table.Column<string>(type: "nvarchar(450)", nullable: true),
-                    ReviewerId = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     IsDelete = table.Column<bool>(type: "bit", nullable: false),
                     CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
                     CreatedBy = table.Column<string>(type: "nvarchar(max)", nullable: false),

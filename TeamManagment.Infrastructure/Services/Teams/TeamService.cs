@@ -37,6 +37,7 @@ namespace TeamManagment.Infrastructure.Services.Teams
             }
             await _db.Teams.AddAsync(team);
             _db.SaveChanges();
+
             // Add Tead Leader
             var teamLeader = new TeamMember()
             {
@@ -173,7 +174,7 @@ namespace TeamManagment.Infrastructure.Services.Teams
                         Id = x.MemberId,
                         FullName = x.Member.FullName,
                         ImageUrl = x.Member.ImageUrl,
-                        MyRating = (int?)(_db.Reviews.Where(x => x.ReviewerId == userId).Average(x => x.Rating)) ?? 0,
+                        MyRating = (int?)(_db.Reviews.Where(u => u.ReviewrId == userId &&x.MemberId == u.ReciverId).Average(x => x.Rating)) ?? 0,
                         Position = x.MemberPosition.ToString(),
                         TeamId = x.TeamId,
                     }).ToListAsync();
