@@ -3,9 +3,11 @@ using STD.Web.Controllers;
 using TeamManagment.Core.Dtos.Assignments;
 using TeamManagment.Core.Dtos.Comments;
 using TeamManagment.Core.Dtos.Review;
+using TeamManagment.Core.Dtos.Submissions;
 using TeamManagment.Core.Helper;
 using TeamManagment.Infrastructure.Services.Comments;
 using TeamManagment.Infrastructure.Services.Reviews;
+using TeamManagment.Infrastructure.Services.Submissions;
 using TeamManagment.Infrastructure.Services.Teams;
 using TeamManagment.Infrastructure.Services.Users;
 
@@ -17,15 +19,19 @@ namespace TeamManagment.Web.Controllers
         private readonly ICommentService _commetnService;
         private readonly IUserService _userService;
         private readonly IReviewService _reviewService;
+        private readonly ISubmissionService _submissionService;
         public TeamMemberController(ITeamMemberService memberService,
                                     ICommentService commetnService,
                                     IUserService userService,
-                                    IReviewService reviewService)
+                                    IReviewService reviewService,
+                                    ISubmissionService submissionService
+                                    )
         {
             _memberService = memberService;
             _commetnService = commetnService;
             _userService = userService;
             _reviewService = reviewService;
+            _submissionService = submissionService;
         }
         public IActionResult MyProfile()
         {
@@ -46,7 +52,6 @@ namespace TeamManagment.Web.Controllers
 
         public async Task<JsonResult> GetDataTableAssignment(Request request, int teamId)
         {
-
             return Json(await _memberService.GetAllAssignmentData(request, teamId, userId));
         }
         // id assignment
@@ -56,16 +61,6 @@ namespace TeamManagment.Web.Controllers
             ViewData["Image"] = user.ImageUrl;
             ViewData["UserName"] = userName;
             return View(_memberService.GetAssignment(id));
-        }
-        [HttpGet]
-        public IActionResult CreateSubmission()
-        {
-            var ct = new CreateAssignmentsDto
-            {
-
-                Title = "asdfafsd"
-            };
-            return PartialView("CreateSubmission", ct);
         }
         public ActionResult LoadPartialView(string target)
         {
@@ -123,6 +118,35 @@ namespace TeamManagment.Web.Controllers
                 }
             }
             return BadRequest();
+        }
+        [HttpGet]
+        public IActionResult CreateSubmission(int assignmentId)
+        {
+            ViewData["AssignmentId"] = assignmentId;
+            return PartialView("CreateSubmission");
+        }
+        [HttpPost]
+        public async Task<IActionResult> CreateSubmission(CreateSubmissionDto dto)
+        {
+            if (ModelState.IsValid)
+            {
+                try
+                {
+                    await _submissionService.CreateSubmission(dto);
+                    return Ok(Result.AddSuccessResult());
+                }
+                catch (Exception)
+                {
+                    return BadRequest();
+                }
+            }
+            return BadRequest();
+
+        }
+
+        public async Task<JsonResult> GetDataTableSubmission(Request request, int assignmentId)
+        {
+            return Json(await _submissionService.GetAllSubmissionDatatable(request, assignmentId));
         }
 
 

@@ -4,7 +4,7 @@
     {
         public int Id { get; set; }
         public DateTime CreatedAt { get; set; }
-        public TimeSpan TimeLeft { get; set; }
+        public string TimeLeft { get; set; }
         // Relations 
         public int AssignmentId { get; set; }
         public Assignment Assignment { get; set; }

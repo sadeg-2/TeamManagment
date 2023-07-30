@@ -108,10 +108,10 @@
 			<!--begin::Navs-->
 			<ul class="nav nav-stretch nav-line-tabs nav-line-tabs-2x border-transparent fs-5 fw-bold">
 				<li class="nav-item mt-2">
-					<a class="nav-link text-active-primary ms-0 me-10 py-5 disable-select">Submissions</a>
+					<a class="nav-link text-active-primary ms-0 me-10 py-5 disable-select active">Submissions</a>
 				</li>
 				<li class="nav-item mt-2">
-					<a class="nav-link text-active-primary ms-0 me-10 py-5 disable-select active">Comments</a>
+					<a class="nav-link text-active-primary ms-0 me-10 py-5 disable-select">Comments</a>
 				</li>
 			</ul>
 			<!--begin::Navs-->
@@ -121,11 +121,20 @@
 	<!--end::Navbar-->
 	<!--begin::Row-->
 	<div class="row g-5 g-xxl-8" id="cardContent">
-		<partial name="_Comments"></partial>
+		<partial name="_Submissions"></partial>
 	</div>
 
 </div>
-<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+@section Scripts{
+	<script src="~/lib/jquery-validation/dist/jquery.validate.min.js"></script>
+	<script src="~/lib/jquery-validation-unobtrusive/jquery.validate.unobtrusive.min.js"></script>
+
+	<script src="~/datatable/Submission.js"></script>
+	<script>
+		var datatable = DataTable();
+	</script>
+}
 
 <script>
 	$(document).ready(function () {
