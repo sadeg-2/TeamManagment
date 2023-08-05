@@ -2,40 +2,52 @@
 {
     public class Results
     {
-        public static object AddSuccessResult()
+        public static string AddSuccessResult()
         {
-            return new { status = 1, msg = "s: تمت اضافة العنصر بنجاح", close = 1 };
+            return  "s: Add Element Successfully ";
         }
 
-        public static object EditSuccessResult()
+        public static string EditSuccessResult()
         {
-            return new { status = 1, msg = "s: تم تحديث بيانات العنصر بنجاح ", close = 1 };
+            return "s:Item data has been updated successfully";
         }
 
         public static object UpdateStatusSuccessResult()
         {
-            return new { status = 1, msg = "s: تم تحديث الحالة  بنجاح ", close = 1 };
+            return "s:Status updated successfully";
         }
 
-        public static object DeleteSuccessResult()
+        public static string DeleteSuccessResult()
         {
-            return new { status = 1, msg = "s: تم حذف العنصر بنجاح", close = 1 };
+            return "s:Item has been deleted successfully";
         }
-        public static object AddFailResult()
+        public static string AddFailResult()
         {
-            return new { status = 1, msg = "e:فشلت عملية الاضافة", close = 1 };
-        }
-
-        public static object EditFailResult()
-        {
-            return new { status = 1, msg = "e: فشل تحديث بيانات العنصر  ", close = 1 };
+            return "e:Add operation failed";
         }
 
-        public static object DeleteFailResult()
+        public static string EditFailResult()
         {
-            return new { status = 1, msg = "e: فشل حذف العنصر ", close = 1 };
+            return "e:Failed to update item data";
         }
 
+        public static string DeleteFailResult()
+        {
+            return "e:Item deletion failed";
+        }
+        public static string InputNotValid()
+        {
+            return "e:Check Again From Your Inputs :( ";
+        }
+
+        public static string RecoverFailResult()
+        {
+            return "e:Item Recovered failed";
+        }
+        public static string RecoverSuccessResult()
+        {
+            return "s:Recover Item Successfully";
+        }
 
     }
 }

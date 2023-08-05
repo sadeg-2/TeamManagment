@@ -1,5 +1,7 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using STD.Web.Controllers;
+using System.Data;
 using TeamManagment.Core.Dtos.Tasks;
 using TeamManagment.Core.Enums;
 using TeamManagment.Core.Helper;
@@ -18,8 +20,6 @@ namespace TeamManagment.Web.Controllers
 
         public IActionResult Index()
         {
-            
-            
             return View();
         }
         public IActionResult Create()
@@ -34,17 +34,19 @@ namespace TeamManagment.Web.Controllers
             {
                 try
                 {
-                    input.AssigneeId = userId ;
+                    input.AssigneeId = userId;
                     await _taskService.CreateAsync(input);
                 }
                 catch (Exception)
                 {
-                    return Ok(Result.AddFailResult());
+                    TempData["msg"] = Result.AddFailResult();
                 }
-                return Ok(Result.AddSuccessResult());
-
+                TempData["msg"] = Result.AddSuccessResult();
             }
-            return PartialView("_Create",input);
+            else {
+                TempData["msg"] = Result.InputNotValid();
+            }
+            return RedirectToAction("Index");
         }
 
         [HttpGet]
@@ -69,12 +71,15 @@ namespace TeamManagment.Web.Controllers
                 }
                 catch (Exception)
                 {
-                    return Ok(Result.EditFailResult());
+                    TempData["msg"] = Result.EditFailResult();
                 }
-                return Ok(Result.EditSuccessResult());
-
+                TempData["msg"] = Result.EditSuccessResult();
             }
-            return NotFound();
+            else
+            {
+                TempData["msg"] = Result.InputNotValid();
+            }
+            return RedirectToAction("Index");
         }
 
         [HttpGet]
@@ -86,9 +91,10 @@ namespace TeamManagment.Web.Controllers
             }
             catch (Exception)
             {
-                return Ok(Result.DeleteFailResult());
+                TempData["msg"] = Result.DeleteFailResult();
             }
-            return Ok(Result.DeleteSuccessResult());
+            TempData["msg"] = Result.DeleteSuccessResult();
+            return RedirectToAction("Index");
         }
         [HttpPost]
         public async Task<JsonResult> GetDataTableData(Request request, int filter)
@@ -114,9 +120,10 @@ namespace TeamManagment.Web.Controllers
             }
             catch (Exception)
             {
-                return Ok(Result.AddFailResult());
+                TempData["msg"] = Result.RecoverFailResult();
             }
-            return Ok(Result.AddSuccessResult());
+            TempData["msg"] = Result.AddSuccessResult();
+            return RedirectToAction("RecycleTask");
         }
         [HttpGet]
         public IActionResult Remove(int id) {
@@ -126,10 +133,10 @@ namespace TeamManagment.Web.Controllers
             }
             catch (Exception)
             {
-                return Ok(Result.DeleteFailResult());
+                TempData["msg"] = Result.DeleteFailResult();
             }
-            return Ok(Result.DeleteSuccessResult());
-
+            TempData["msg"] = Result.DeleteSuccessResult();
+            return RedirectToAction("RecycleTask");
         }
 
         public async Task<IActionResult> MarkAsComplete(int id , int status) {
@@ -139,9 +146,10 @@ namespace TeamManagment.Web.Controllers
             }
             catch (Exception)
             {
-                return Ok(Result.UpdateStatusSuccessResult());
+                TempData["msg"] = Result.UpdateStatusSuccessResult();
             }
-            return Ok(Result.EditFailResult());
+            TempData["msg"] = Result.EditFailResult();
+            return RedirectToAction("Index");
         }
 
        

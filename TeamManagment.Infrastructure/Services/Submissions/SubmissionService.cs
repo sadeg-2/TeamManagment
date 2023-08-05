@@ -21,7 +21,6 @@ namespace TeamManagment.Infrastructure.Services.Submissions
 
         public async Task<int> CreateSubmission(CreateSubmissionDto dto)
         {
-            
             var assignment = _db.Assignments.Include(x => x.Task).SingleOrDefault(x => x.Id == dto.AssignmentId && !x.IsDelete);
             if (assignment == null)
             {

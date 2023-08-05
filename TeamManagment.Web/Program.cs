@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using TeamManagment.Data;
 using TeamManagment.Data.Models;
 using TeamManagment.Infrastructure.Extensions;
 using TeamManagment.Web.Data;
@@ -60,4 +61,4 @@ app.MapControllerRoute(
     pattern: "{controller=Home}/{action=Index}/{id?}");
 app.MapRazorPages();
 
-app.Run();
+app.SeedDb().Run();

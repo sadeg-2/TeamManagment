@@ -3,9 +3,12 @@ using TeamManagment.Core.Helper;
 using TeamManagment.Infrastructure.Services.Users;
 using TeamManagment.Core.Dtos.User;
 using STD.Web.Controllers;
+using Microsoft.AspNetCore.Authorization;
+using TeamManagment.Core.Enums;
 
 namespace TeamManagment.Web.Controllers
 {
+    [Authorize(Roles = "Adminstrator")]
     public class UserController : BaseController
     {
         private readonly IUserService _userService;
@@ -16,6 +19,7 @@ namespace TeamManagment.Web.Controllers
 
         public IActionResult Index()
         {
+
             return View();
         }
         public IActionResult Create()
@@ -30,16 +34,19 @@ namespace TeamManagment.Web.Controllers
             {
                 try
                 {
-                    await _userService.CreateAsync(input);
+                    await _userService.CreateAsync(input, "Sadeg$2001");
                 }
                 catch (Exception)
                 {
-                    return Ok(Result.AddFailResult());
-                }
-                return Ok(Result.AddSuccessResult());
 
+                    TempData["msg"] = Result.AddFailResult();
+                }
+                TempData["msg"] = Result.AddSuccessResult();
             }
-            return PartialView("_Create");
+            else {
+                TempData["msg"] = Result.InputNotValid();
+            }
+            return RedirectToAction("Index");
         }
 
         [HttpGet]
@@ -61,12 +68,14 @@ namespace TeamManagment.Web.Controllers
                 }
                 catch (Exception)
                 {
-                    return Ok(Result.EditFailResult());
+                    TempData["msg"] = Result.EditFailResult();
                 }
-                return Ok(Result.EditSuccessResult());
-
+                TempData["msg"] = Result.EditSuccessResult();
             }
-            return NotFound();
+            else {
+                TempData["msg"] = Result.InputNotValid();
+            }
+            return RedirectToAction("Index");
         }
 
         [HttpGet]
@@ -75,12 +84,13 @@ namespace TeamManagment.Web.Controllers
             try
             {
                 await _userService.DeleteAsync(id);
+                TempData["msg"] = Result.DeleteSuccessResult();
             }
             catch (Exception)
             {
-                return NotFound();
+                TempData["msg"] = Result.DeleteFailResult();
             }
-            return Ok(Result.DeleteSuccessResult());
+            return RedirectToAction("Index");
         }
         [HttpPost]
         public async Task<JsonResult> GetDataTableData(Request request, string x)

@@ -23,8 +23,8 @@ namespace TeamManagment.Core.Dtos.User
         [DataType(DataType.Date)]
         [Display(Name = "Birthday")]
         public DateTime DOB { get; set; }
-        [Required]
+
         [Display(Name = "Image")]
-        public IFormFile ImageUrl { get; set; }
+        public IFormFile? ImageUrl { get; set; }
     }
 }

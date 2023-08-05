@@ -107,7 +107,7 @@
     <script src="~/datatable/datatable.js"></script>
     <script>
        var datatable = DataTable(
-            "",
+            "/PersonalTask/GetDataTableData",
             [
                 { data: "title", name: "Title", className: "dt-right align-middle" },
                 { data: "deadLine", name: "DeadLine", className: "dt-center align-middle" },
@@ -194,8 +194,8 @@
                     url: "/PersonalTask/Update/" + modelId,
                     success: function (result) {
                         $(".modal-backdrop.show").remove();
-                        $("#EditModal").html(result);
-                        $("#taskEditModel").modal("show");
+                        $(".modal-content").html(result);
+                        $("#EditModel").modal("show");
                     }
                 });
             return false;
@@ -284,7 +284,8 @@
             datatable.ajax.reload();
         });
     </script>
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/jquery/dist/jquery.js"></script>
 
 
     <script>
@@ -292,26 +293,18 @@
                 $('#CreateTask').click(function (e) {
                 e.preventDefault();
                 var popupUrl = $(this).data('popup-url');
-
                 $.ajax({
                     url: popupUrl,
                     type: 'GET',
                     success: function (result) {
-                        $('#popupContainer').html(result);
-                        $('#kt_modal_new').modal('show');
+                        $('.modal-content').html(result);
+                        $('#EditModel').modal('show');
                     },
                     error: function (xhr, status, error) {
                         console.error(error);
                     }
                 });
             });
-        });
-       
-
-        $(document).on('click', function (e) {
-            if (!$('#kt_modal_new').is(e.target) && $('#kt_modal_new').has(e.target).length === 0) {
-                $('#kt_modal_new').modal('hide');
-            }
         });
     </script>
 }

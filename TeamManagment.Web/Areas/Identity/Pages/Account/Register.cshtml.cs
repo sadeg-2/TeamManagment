@@ -18,6 +18,8 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.Extensions.Logging;
+using TeamManagment.Core.Dtos.User;
+using TeamManagment.Infrastructure.Services.Users;
 using MyUser =  TeamManagment.Data.Models.User;
 
 namespace TeamManagment.Web.Areas.Identity.Pages.Account
@@ -30,13 +32,15 @@ namespace TeamManagment.Web.Areas.Identity.Pages.Account
         private readonly IUserEmailStore<MyUser> _emailStore;
         private readonly ILogger<RegisterModel> _logger;
         private readonly IEmailSender _emailSender;
-
+        private readonly IUserService _userService;
         public RegisterModel(
             UserManager<MyUser> userManager,
             IUserStore<MyUser> userStore,
             SignInManager<MyUser> signInManager,
             ILogger<RegisterModel> logger,
-            IEmailSender emailSender)
+            IEmailSender emailSender,
+            IUserService userService
+            )
         {
             _userManager = userManager;
             _userStore = userStore;
@@ -44,6 +48,7 @@ namespace TeamManagment.Web.Areas.Identity.Pages.Account
             _signInManager = signInManager;
             _logger = logger;
             _emailSender = emailSender;
+            _userService = userService;
         }
 
         /// <summary>
@@ -98,6 +103,24 @@ namespace TeamManagment.Web.Areas.Identity.Pages.Account
             [Display(Name = "Confirm password")]
             [Compare("Password", ErrorMessage = "The password and confirmation password do not match.")]
             public string ConfirmPassword { get; set; }
+
+            [Required]
+            [StringLength(maximumLength: 30, MinimumLength = 5)]
+            [Display(Name = "Full Name")]
+            public string FullName { get; set; }
+            [Required]
+            [Phone]
+            [StringLength(maximumLength: 15, MinimumLength = 7)]
+            [Display(Name = "Phone Number")]
+            public string PhoneNumber { get; set; }
+
+            [Required]
+            [DataType(DataType.Date)]
+            [Display(Name = "Birthday")]
+            public DateTime DOB { get; set; }
+            [Required]
+            [Display(Name = "Image")]
+            public IFormFile ImageUrl { get; set; }
         }
 
 
@@ -113,13 +136,18 @@ namespace TeamManagment.Web.Areas.Identity.Pages.Account
             ExternalLogins = (await _signInManager.GetExternalAuthenticationSchemesAsync()).ToList();
             if (ModelState.IsValid)
             {
-                var user = CreateUser();
-
-                await _userStore.SetUserNameAsync(user, Input.Email, CancellationToken.None);
-                await _emailStore.SetEmailAsync(user, Input.Email, CancellationToken.None);
-                var result = await _userManager.CreateAsync(user, Input.Password);
-
-                if (result.Succeeded)
+                //var user = CreateUser();
+                var cu = new CreateUserDto()
+                {
+                     Email = Input.Email,
+                     FullName = Input.FullName,
+                     PhoneNumber = Input.PhoneNumber,
+                     DOB = Input.DOB,
+                     ImageUrl = Input.ImageUrl ,
+                };
+                var user = await _userService.CreateAsync(cu ,Input.Password);
+                
+                if (user != null)
                 {
                     _logger.LogInformation("User created a new account with password.");
 
@@ -145,13 +173,7 @@ namespace TeamManagment.Web.Areas.Identity.Pages.Account
                         return LocalRedirect(returnUrl);
                     }
                 }
-                foreach (var error in result.Errors)
-                {
-                    ModelState.AddModelError(string.Empty, error.Description);
-                }
             }
-
-            // If we got this far, something failed, redisplay form
             return Page();
         }
 
