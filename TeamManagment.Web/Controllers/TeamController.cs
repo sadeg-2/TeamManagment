@@ -37,15 +37,19 @@ namespace TeamManagment.Web.Controllers
                 try
                 {
                     await _teamService.CreateAsync(input,userName);
+                    TempData["msg"] = Result.AddSuccessResult();
+
                 }
                 catch (Exception)
                 {
-                    return Ok(Result.AddFailResult());
+                    TempData["msg"] = Result.AddFailResult();
                 }
-                return Ok(Result.AddSuccessResult());
-
             }
-            return PartialView("_Create", input);
+            else
+            {
+                TempData["msg"] = Result.InputNotValid();
+            }
+            return RedirectToAction("Index");
         }
 
         [HttpGet]
@@ -67,16 +71,23 @@ namespace TeamManagment.Web.Controllers
                 try
                 {
                     await _teamService.UpdateAsync(input,userName);
+                    TempData["msg"] = Result.EditSuccessResult();
+
                 }
                 catch (Exception)
                 {
-                    return Ok(Result.EditFailResult());
+                    TempData["msg"] = Result.EditFailResult();
                 }
-                return Ok(Result.EditSuccessResult());
 
             }
-            return View();
+            else
+            {
+                TempData["msg"] = Result.InputNotValid();
+            }
+            return RedirectToAction("Index");
         }
+
+        
 
         [HttpGet]
         public  IActionResult Delete(int id)
@@ -109,7 +120,6 @@ namespace TeamManagment.Web.Controllers
             return PartialView(partialViewName);
         }
 
-
         [HttpPost]
         public async Task<JsonResult> GetDataTableForMember(Request request)
         {
@@ -123,26 +133,48 @@ namespace TeamManagment.Web.Controllers
         }
 
 
+        [HttpGet]
+        public IActionResult DeleteMember(int memberId)
+        {
+            var teamId = (int)HttpContext.Session.GetInt32("TeamId");
+            try
+            {
+                _teamMember.Delete(memberId,userName);
+                TempData["msg"] = Result.DeleteSuccessResult();
+            }
+            catch (Exception) { 
+                TempData["msg"] = Result.DeleteFailResult();
+            }
 
+            return RedirectToAction("ProfileTeam", new { id = teamId });
+
+        }
+        public IActionResult CreateMember()
+        {
+            return PartialView("_CreateMember");
+        }
 
         [HttpPost]
         public async Task<IActionResult> CreateMember([FromForm] CreateMemberDto input)
         {
+            var teamId = (int)HttpContext.Session.GetInt32("TeamId");
             if (ModelState.IsValid)
             {
                 try
                 {
-                    input.TeamId =(int)HttpContext.Session.GetInt32("TeamId");
+                    input.TeamId = teamId;
                     await _teamMember.CreateAsync(input, userName);
+                    TempData["msg"] = Result.AddSuccessResult();
                 }
                 catch (Exception)
                 {
-                    return Ok(Result.AddFailResult());
+                    TempData["msg"] = Result.AddFailResult();
                 }
-                return Ok(Result.AddSuccessResult());
-
             }
-            return PartialView("_CreateMember", input);
+            else { 
+               TempData["msg"] = Result.InputNotValid();
+            }
+            return RedirectToAction("ProfileTeam",new { id = teamId});
         }
 
         [HttpGet]
@@ -153,23 +185,25 @@ namespace TeamManagment.Web.Controllers
         }
         [HttpPost]
         public IActionResult AssignTask(CreateAssignmentsDto dto) {
+            var teamId = (int)HttpContext.Session.GetInt32("TeamId");
             if (userId == null)
             {
-                return NotFound();
+                TempData["msg"] = Result.InputNotValid();
+                return RedirectToAction("ProfileTeam",teamId);
             }
             if (ModelState.IsValid)
             {
                 try
                 {
                     _teamMember.AssignTask(dto, userId);
+                    TempData["msg"] = Result.AddSuccessResult();
                 }
                 catch (Exception)
                 {
-                    return Ok(Result.AddFailResult());
+                    TempData["msg"] = Result.AddFailResult();
                 }
-                return Ok(Result.AddSuccessResult());
             }
-            return RedirectToAction("Index");
+            return RedirectToAction("ProfileTeam", new { id = teamId });
         }
 
         public IActionResult MyColleagues() { 

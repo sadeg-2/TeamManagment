@@ -64,7 +64,7 @@
     <script src="~/datatable/datatable.js"></script>
     <script>
        var datatable = DataTable(
-            "",
+            "/Team/GetDataTableData/",
             [
                 { data: "name", name: "Name", className: "dt-right align-middle" },
                 { data: "teamLeaderUserName", name: "TeamLeaderUserName", className: "dt-center align-middle" },
@@ -93,21 +93,39 @@
                     orderable: false,
                     className: "dt-center align-middle",
                     render: function (data) {
-                        return "<a id='deleteButton_" + data.id + "'class='btn delete' data-delete-url='/Team/Delete/'>" +
-                                "<span class='svg-icon svg-icon-2'>" +
-                                "<svg width='24' height='24' viewBox='0 0 24 24' fill='none' xmlns='http://www.w3.org/2000/svg'>" +
-                                "<path d='M5 9C5 8.44772 5.44772 8 6 8H18C18.5523 8 19 8.44772 19 9V18C19 19.6569 17.6569 21 16 21H8C6.34315 21 5 19.6569 5 18V9Z' fill='currentColor'></path>" +
-                                "<path opacity='0.5' d='M5 5C5 4.44772 5.44772 4 6 4H18C18.5523 4 19 4.44772 19 5V5C19 5.55228 18.5523 6 18 6H6C5.44772 6 5 5.55228 5 5V5Z' fill='currentColor'></path>" +
-                                "<path opacity='0.5' d='M9 4C9 3.44772 9.44772 3 10 3H14C14.5523 3 15 3.44772 15 4V4H9V4Z' fill='currentColor'></path>" +
-                                "</svg></span>" +
-                                "</a>" +
-                                "<a  href='/Team/ProfileTeam/" + data.id + "'class='btn delete' data-id='" + data.id + "'>" +
+
+                        var button = '';
+                        if (!data.isDelete) {
+                           button = "<a  href='/Team/ProfileTeam/" + data.id + "'class='btn delete' data-id='" + data.id + "'>" +
                                 "<span class='svg - icon svg - icon - 2'>" +
-                                "<svg width='24' height='24' viewBox='0 0 24 24' fill='none' xmlns='http://www.w3.org/2000/svg'>"+
+                                "<svg width='24' height='24' viewBox='0 0 24 24' fill='none' xmlns='http://www.w3.org/2000/svg'>" +
                                 "<path d='M20 14H18V10H20C20.6 10 21 10.4 21 11V13C21 13.6 20.6 14 20 14ZM21 19V17C21 16.4 20.6 16 20 16H18V20H20C20.6 20 21 19.6 21 19ZM21 7V5C21 4.4 20.6 4 20 4H18V8H20C20.6 8 21 7.6 21 7Z' fill='currentColor'></path>" +
                                 "<path opacity='0.3' d='M17 22H3C2.4 22 2 21.6 2 21V3C2 2.4 2.4 2 3 2H17C17.6 2 18 2.4 18 3V21C18 21.6 17.6 22 17 22ZM10 7C8.9 7 8 7.9 8 9C8 10.1 8.9 11 10 11C11.1 11 12 10.1 12 9C12 7.9 11.1 7 10 7ZM13.3 16C14 16 14.5 15.3 14.3 14.7C13.7 13.2 12 12 10.1 12C8.10001 12 6.49999 13.1 5.89999 14.7C5.59999 15.3 6.19999 16 7.39999 16H13.3Z' fill='currentColor'></path>" +
                                 "</svg></span>" +
                                 "</a>";
+
+                        } else {
+                            button = `<a href="/TeamMember/Profile/${data.id}" class="btn btn-icon btn-bg-light btn-active-color-primary btn-sm me-1" data-bs-trigger='hover' title='Show Profile'>
+                                                <!--begin::Svg Icon | path: icons/duotune/art/art005.svg-->
+                                                <span class="svg-icon svg-icon-2">
+                                                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                                        <path d="M20 14H18V10H20C20.6 10 21 10.4 21 11V13C21 13.6 20.6 14 20 14ZM21 19V17C21 16.4 20.6 16 20 16H18V20H20C20.6 20 21 19.6 21 19ZM21 7V5C21 4.4 20.6 4 20 4H18V8H20C20.6 8 21 7.6 21 7Z" fill="currentColor"></path>
+                                                        <path opacity="0.3" d="M17 22H3C2.4 22 2 21.6 2 21V3C2 2.4 2.4 2 3 2H17C17.6 2 18 2.4 18 3V21C18 21.6 17.6 22 17 22ZM10 7C8.9 7 8 7.9 8 9C8 10.1 8.9 11 10 11C11.1 11 12 10.1 12 9C12 7.9 11.1 7 10 7ZM13.3 16C14 16 14.5 15.3 14.3 14.7C13.7 13.2 12 12 10.1 12C8.10001 12 6.49999 13.1 5.89999 14.7C5.59999 15.3 6.19999 16 7.39999 16H13.3Z" fill="currentColor"></path>
+                                                    </svg>
+                                                </span>
+                                                <!--end::Svg Icon-->
+                                            </a>`;
+                        }
+
+                        return "<a id='deleteButton_" + data.id + "'class='btn btn-icon  btn-bg-light btn-active-color-primary btn-sm me-1 delete' data-delete-url='/Team/Delete/'>" +
+                                "<span class='svg-icon svg-icon-2'>" +
+                                `<i class="fa-solid fa-trash-can"></i>` +
+                                "</span>" +
+                                "</a>" +
+                                b;
+                                
+                                
+                               
                     },
                 }
             ],

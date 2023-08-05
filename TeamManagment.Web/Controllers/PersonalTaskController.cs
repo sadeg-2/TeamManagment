@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Authorization;
+﻿using Hangfire;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using STD.Web.Controllers;
 using System.Data;
@@ -6,6 +7,7 @@ using TeamManagment.Core.Dtos.Tasks;
 using TeamManagment.Core.Enums;
 using TeamManagment.Core.Helper;
 using TeamManagment.Infrastructure.Services.Tasks;
+
 
 namespace TeamManagment.Web.Controllers
 {
@@ -35,13 +37,14 @@ namespace TeamManagment.Web.Controllers
                 try
                 {
                     input.AssigneeId = userId;
-                    await _taskService.CreateAsync(input);
+                    var task = await _taskService.CreateAsync(input);
+                    BackgroundJob.Schedule($"{task.Id}",()=>notify(task.NotifyMsg()),task.DeadLine- DateTime.Now);
+                    TempData["msg"] = Result.AddSuccessResult();
                 }
                 catch (Exception)
                 {
                     TempData["msg"] = Result.AddFailResult();
                 }
-                TempData["msg"] = Result.AddSuccessResult();
             }
             else {
                 TempData["msg"] = Result.InputNotValid();
@@ -68,12 +71,12 @@ namespace TeamManagment.Web.Controllers
                 try
                 {
                     await _taskService.UpdateAsync(input);
+                    TempData["msg"] = Result.EditSuccessResult();
                 }
                 catch (Exception)
                 {
                     TempData["msg"] = Result.EditFailResult();
                 }
-                TempData["msg"] = Result.EditSuccessResult();
             }
             else
             {
@@ -117,12 +120,12 @@ namespace TeamManagment.Web.Controllers
             try
             {
                 _taskService.RecoverTask(id);
+                TempData["msg"] = Result.AddSuccessResult();
             }
             catch (Exception)
             {
                 TempData["msg"] = Result.RecoverFailResult();
             }
-            TempData["msg"] = Result.AddSuccessResult();
             return RedirectToAction("RecycleTask");
         }
         [HttpGet]
@@ -143,16 +146,19 @@ namespace TeamManagment.Web.Controllers
             try
             {
                 await _taskService.MarkAsync(id,(TaskStatee)status);
+                TempData["msg"] = Result.EditFailResult();
             }
             catch (Exception)
             {
                 TempData["msg"] = Result.UpdateStatusSuccessResult();
             }
-            TempData["msg"] = Result.EditFailResult();
             return RedirectToAction("Index");
         }
 
-       
+        public IActionResult notify(string msg) { 
+            TempData["msg"] = msg;
+            return RedirectToAction("Index");
+        }
 
     }
 }

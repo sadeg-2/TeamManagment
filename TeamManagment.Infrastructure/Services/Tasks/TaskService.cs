@@ -1,4 +1,5 @@
-﻿using System.Linq.Dynamic.Core;
+﻿using Hangfire;
+using System.Linq.Dynamic.Core;
 using TeamManagment.Core.Enums;
 
 namespace TeamManagment.Infrastructure.Services.Tasks
@@ -22,7 +23,13 @@ namespace TeamManagment.Infrastructure.Services.Tasks
             task.IsCompleted = TaskStatee.UnCompleted;
             await _db.AddAsync(task);
             await _db.SaveChangesAsync();
+
             return task;
+        }
+        public void SendEmail()
+        {
+            Console.WriteLine($"Email Sent at {DateTime.Now}");
+            
         }
 
         public async Task<int> DeleteAsync(int id)

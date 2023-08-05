@@ -117,15 +117,16 @@
 			<!--end::Details-->
 			<!--begin::Navs-->
 			<ul class="nav nav-stretch nav-line-tabs nav-line-tabs-2x border-transparent fs-5 fw-bold">
-				<li  class="nav-item mt-2">
+				<li class="nav-item mt-2">
+					<a class="nav-link text-active-primary ms-0 me-10 py-5 disable-select active">Members</a>
+				</li>
+				@*<li  class="nav-item mt-2">
 					<a  class="nav-link text-active-primary ms-0 me-10 py-5 disable-select active" >OverView</a>
 				</li>
-				<li class="nav-item mt-2">
-					<a  class="nav-link text-active-primary ms-0 me-10 py-5 disable-select" >Members</a>
-				</li>
+				
 				<li class="nav-item mt-2">
 					<a class="nav-link text-active-primary ms-0 me-10 py-5 disable-select">Likes</a>
-				</li>
+				</li>*@
 			</ul>
 			<!--begin::Navs-->
 		</div>
@@ -134,15 +135,22 @@
 	<!--begin::Row-->
 	<div class="row g-5 g-xxl-8">
 		<div class="card" id="cardContent">
-			<partial name="_OverView"></partial>
+			<partial name="_Members"></partial>
 		</div>
 	</div>
 	<!--end::Row-->
 	<div id="EditModal"></div>
 </div>
 <!--end::Content container-->
-<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+@section Scripts{
+<script src="~/lib/jquery-validation/dist/jquery.validate.min.js"></script>
+<script src="~/lib/jquery-validation-unobtrusive/jquery.validate.unobtrusive.min.js"></script>
+
+<script src="~/datatable/members.js"></script>
+
+
 <script>
+	var datatable = DataTable();
 	$(document).ready(function () {
 		$("ul.nav li.nav-item a").on("click", function (e) {
 			e.preventDefault(); 
@@ -170,14 +178,27 @@
 				url: "/Team/Update/" + modelId,
 				success: function (result) {
 					$(".modal-backdrop.show").remove();
-					$("#EditModal").html(result);
-					$("#ProfileEditModel").modal("show");
+					$(".modal-content").html(result);
+					$("#EditModel").modal("show");
+				}
+			});
+		return false;
+	});
+	$(document).on("click", ".create", function () {
+		$.ajax(
+			{
+				url: "/Team/CreateMember",
+				success: function (result) {
+					$(".modal-content").html(result);
+					$("#EditModel").modal("show");
 				}
 			});
 		return false;
 	});
 
+
 </script>
+}
 <style>
 	.disable-select {
 		-webkit-user-select: none; /* Safari */

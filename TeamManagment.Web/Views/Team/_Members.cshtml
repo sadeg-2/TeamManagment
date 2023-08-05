@@ -1,6 +1,4 @@
-﻿@model TeamMemberViewModel
-
-<!--Content Popup-->
+﻿<!--Content Popup-->
 <div class="modal fade" id="addTaskModel" tabindex="-1" data-bs-backdrop="static" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered mw-650px">
         <div class="modal-content rounded">
@@ -18,7 +16,7 @@
             <!--begin::Actions-->
             <div style="padding-left:420px" class="d-flex align-items-center gap-2 gap-lg-3">
                 <div class="card-toolbar border-0" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-trigger="hover">
-                    <a class="btn btn-sm btn-light btn-active-primary" data-popup-url="Create" data-bs-toggle="modal" data-bs-target="#kt_modal_1">
+                    <a class="btn btn-sm btn-light btn-active-primary create" data-popup-url="Create" data-bs-toggle="modal" data-bs-target="#kt_modal_1">
                         <!--begin::Svg Icon | path: icons/duotune/arrows/arr075.svg-->
                         <span class="svg-icon svg-icon-3">
                             <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -35,8 +33,8 @@
             </div>
             <!--end::Actions-->
             @*<div id="popupContainer"></div>*@
-            <partial name="_CreateMember">
-            <div id="TaskModal"></div>
+@*            <partial name="_CreateMember">
+*@            <div id="TaskModal"></div>
 
 
         </div>
@@ -46,9 +44,9 @@
                     <thead>
                         <tr class="fw-bold fs-6 text-gray-800 px-7">
                             <th>User Name</th>
-                            <th class="text-center">Member Position</th>
-                            <th class="text-center">Join Date</th>
-                            <th class="text-center">العمليات</th>
+                            <th>Member Position</th>
+                            <th>Join Date</th>
+                            <th>العمليات</th>
                         </tr>
                     </thead>
                 </table>
@@ -56,105 +54,3 @@
         </div>
     </div>
 </div>
-
-<script src="~/datatable/datatable.js"></script>
-<script>
-   var datatable = DataTable(
-        "../GetDataTableForMember",
-        [
-            { data: "userName", name: "UserName", className: "dt-center align-middle" },
-            { data: "memberPosition", name: "MemberPosition", className: "dt-center align-middle" },
-            {
-                "data": null, "name": "DOB", "autowidth": true,
-                "sorting": false,
-                "render": function (data, type, row) {
-                    return `<td class="text-end">
-                                            <span class="badge badge-light-danger fw-semibold me-1">${data.joinDate}</span>
-                                        </td>`;
-                }
-            },
-            {
-                data: null,
-                name: null,
-                orderable: false,
-                className: "dt-center align-middle",
-                render: function (data) {
-                    return "<a id='deleteButton_" + data.id + "'class='btn delete' data-delete-url='/Team/Delete/'>" +
-                        "<span class='svg-icon svg-icon-2'>" +
-                        "<svg width='24' height='24' viewBox='0 0 24 24' fill='none' xmlns='http://www.w3.org/2000/svg'>" +
-                        "<path d='M5 9C5 8.44772 5.44772 8 6 8H18C18.5523 8 19 8.44772 19 9V18C19 19.6569 17.6569 21 16 21H8C6.34315 21 5 19.6569 5 18V9Z' fill='currentColor'></path>" +
-                        "<path opacity='0.5' d='M5 5C5 4.44772 5.44772 4 6 4H18C18.5523 4 19 4.44772 19 5V5C19 5.55228 18.5523 6 18 6H6C5.44772 6 5 5.55228 5 5V5Z' fill='currentColor'></path>" +
-                        "<path opacity='0.5' d='M9 4C9 3.44772 9.44772 3 10 3H14C14.5523 3 15 3.44772 15 4V4H9V4Z' fill='currentColor'></path>" +
-                        "</svg></span>" +
-                        "</a>" +
-                        "<div data-Memmber-id='" + data.id + "'class='btn assignButton' type = 'button' data-bs-toggle='modal' data-bs-target='#assignModel' data-bs-trigger='hover' title='Assign Task' >" +
-                        "<span class= 'svg-icon svg-icon-muted svg-icon-2hx' >" +
-                        "<svg xmlns='http://www.w3.org/2000/svg' width = '10' height = '10' fill = 'currentColor' class= 'bi bi-plus-circle' viewBox = '0 0 16 16' >" +
-                        "<path d='M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z' />" +
-                        "<path d='M8 4a.5.5 0 0 1 .5.5v3h3a.5.5 0 0 1 0 1h-3v3a.5.5 0 0 1-1 0v-3h-3a.5.5 0 0 1 0-1h3v-3A.5.5 0 0 1 8 4z' />"+
-                        "</svg></span>" +
-                        "</div>" ;
-                },
-            }
-        ],
-    );
-    // Function to handle delete confirmation
-    function DeleteItem() {
-        var deleteUrl = $(this).data('delete-url');
-        var id = $(this).attr('id').split('_')[1];
-
-        Swal.fire({
-            title: 'Are you sure?',
-            text: `You are about to delete This Member with ID: ${id}`,
-            icon: 'warning',
-            showCancelButton: true,
-            confirmButtonText: 'Yes',
-            cancelButtonText: 'No'
-        }).then((result) => {
-            if (result.isConfirmed) {
-                // User clicked "Yes"
-                $.ajax({
-                    url: deleteUrl + id,
-                    type: 'Get',
-                    success: function (response) {
-                        Swal.fire({
-                            title: 'Deleted!',
-                            text: `This Member with ID: ${id} has been deleted.`,
-                            icon: 'success',
-                            showConfirmButton: true,
-                            confirmButtonText: 'OK'
-                        }).then(() => {
-                            // Perform any additional action after the confirmation alert is closed
-                            console.log('Additional action after OK is pressed');
-
-                            location.reload();
-                        });
-                    },
-                    error: function (xhr, status, error) {
-                        Swal.fire('Error', 'An error occurred while deleting the Task.', 'error');
-                    }
-                });
-            } else if (result.dismiss === Swal.DismissReason.cancel) {
-                // User clicked "No" or closed the dialog
-                Swal.fire('Cancelled', `Deletion of Member with ID: ${id} was cancelled.`, 'info');
-            }
-        });
-    }
-    // Add event listener to delete buttons
-    $(document).on('click', '[id^="deleteButton_"]', DeleteItem);
-    // Event delegation to handle click events on elements dynamically added to the DOM
-    $(document).on("click", ".assignButton", function () {
-        let memberId = $(this).closest("div[data-Memmber-id]").attr("data-Memmber-id");
-        $.ajax(
-            {
-                url: "/Team/AssignTask/" + memberId,
-                success: function (result) {
-                    $(".modal-content").html(result);
-                    $("#addTaskModel").modal("show");
-                }
-            });
-        return false;
-    });
-
-  
-</script>

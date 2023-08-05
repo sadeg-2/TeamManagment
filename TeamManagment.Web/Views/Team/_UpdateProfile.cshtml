@@ -1,124 +1,112 @@
 ﻿@model UpdateTeamDto
 
-<!--begin::Modal - New Target-->
-<div class="modal fade" id="ProfileEditModel" tabindex="-1">
-	<!--begin::Modal dialog-->
-	<div class="modal-dialog modal-dialog-centered mw-650px">
-		<!--begin::Modal content-->
-		<div class="modal-content rounded">
-			<!--begin::Modal header-->
-			<div class="modal-header pb-0 border-0 justify-content-end">
-				<!--begin::Close-->
-				<div class="btn btn-sm btn-icon btn-active-color-primary" data-bs-dismiss="modal">
-					<!--begin::Svg Icon | path: icons/duotune/arrows/arr061.svg-->
-					<span class="svg-icon svg-icon-1">
-						<svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-							<rect opacity="0.5" x="6" y="17.3137" width="16" height="2" rx="1" transform="rotate(-45 6 17.3137)" fill="currentColor" />
-							<rect x="7.41422" y="6" width="16" height="2" rx="1" transform="rotate(45 7.41422 6)" fill="currentColor" />
-						</svg>
-					</span>
-					<!--end::Svg Icon-->
-				</div>
-				<!--end::Close-->
-			</div>
-			<!--begin::Modal header-->
-			<!--begin::Modal body-->
-			<div class="modal-body scroll-y px-10 px-lg-15 pt-0 pb-15">
-				<!--begin:Form-->
-				<form id="FormUpdate" class="form" asp-action="Update" asp-controller="Team" enctype="multipart/form-data">
-					<div asp-validation-summary="ModelOnly" class="text-danger"></div>
-					<input asp-for="Id" type="hidden" />
-
-					<!--begin::Heading-->
-					<div class="mb-13 text-center">
-						<!--begin::Title-->
-						<h1 class="mb-3">Update Profile Team</h1>
-						<!--end::Title-->
-					</div>
-					<!--end::Heading-->
-					<!--begin::Input group-->
-					<div class="row g-p mb-8">
-						<div class="col-md-9 fv-row">
-							<label asp-for="Name" class="d-flex align-items-center fs-6 fw-semibold mb-2">
-								<span class="required">Title</span>
-							</label>
-							<input asp-for="Name" type="text" class="form-control form-control-solid" placeholder="Enter Title " />
-							<span asp-validation-for="Name" class="text-danger"></span>
-						</div>
-					</div>
-					<!--end::Input group-->
-					<!--begin::Input group-->
-					<div class="row g-p mb-8">
-						<div class="col-md-9 fv-row">
-							<label asp-for="Description" class="d-flex align-items-center fs-6 fw-semibold mb-2">
-								<span class="required">Description</span>
-							</label>
-							<input asp-for="Description" type="text" class="form-control form-control-solid" placeholder="Enter the Description" />
-							<span asp-validation-for="Description" class="text-danger"></span>
-						</div>
-					</div>
-					<!--end::Input group-->
-					<!--begin::Input group-->
-					<div class="row g-9 mb-8">
-						<!--begin::Input group-->
-						<div class="col-md-9 fv-row">
-							<!--begin::Label-->
-							<label class="d-block fw-semibold fs-6 mb-5">
-								<span class="required">Image </span>
-								<i class="fas fa-exclamation-circle ms-2 fs-7" data-bs-toggle="tooltip" title="E.g. Select a logo to represent the company that's running the campaign."></i>
-							</label>
-							<!--end::Label-->
-							<!--begin::Image input-->
-							<div class="image-input image-input-empty image-input-outline image-input-placeholder" data-kt-image-input="true">
-								<!--begin::Preview existing avatar-->
-								<div class="image-input-wrapper w-125px h-125px"></div>
-								<!--end::Preview existing avatar-->
-								<!--begin::Label-->
-								<label class="btn btn-icon btn-circle btn-active-color-primary w-25px h-25px bg-body shadow" data-kt-image-input-action="change" data-bs-toggle="tooltip" title="Change avatar">
-									<i class="bi bi-pencil-fill fs-7"></i>
-									<!--begin::Inputs-->
-									<input type="file" asp-for="ImageUrl" accept=".png, .jpg, .jpeg" />
-									<input type="hidden" name="avatar_remove" />
-									<!--end::Inputs-->
-								</label>
-								<!--end::Label-->
-								<!--begin::Cancel-->
-								<span class="btn btn-icon btn-circle btn-active-color-primary w-25px h-25px bg-body shadow" data-kt-image-input-action="cancel" data-bs-toggle="tooltip" title="Cancel avatar">
-									<i class="bi bi-x fs-2"></i>
-								</span>
-								<!--end::Cancel-->
-								<!--begin::Remove-->
-								<span class="btn btn-icon btn-circle btn-active-color-primary w-25px h-25px bg-body shadow" data-kt-image-input-action="remove" data-bs-toggle="tooltip" title="Remove avatar">
-									<i class="bi bi-x fs-2"></i>
-								</span>
-								<!--end::Remove-->
-							</div>
-							<!--end::Image input-->
-							<!--begin::Hint-->
-							<div class="form-text">Allowed file types: png, jpg, jpeg.</div>
-							<!--end::Hint-->
-						</div>
-						<!--end::Input group-->
-
-
-					</div>
-					<!--end::Input group-->
-
-					<br>
-					<br>
-					<!--begin::Actions-->
-					<div class="text-center">
-						<input id="kt_modal_1_submit" type="submit" value="Submits" class="btn btn-primary" />
-						<button type="reset" id="kt_modal_1_cancel" class="btn btn-light me-3">Cancel</button>
-					</div>
-					<!--end::Actions-->
-				</form>
-				<!--end:Form-->
-			</div>
-			<!--end::Modal body-->
-		</div>
-		<!--end::Modal content-->
+<!--begin::Modal header-->
+<div class="modal-header pb-0 border-0 justify-content-end">
+	<!--begin::Close-->
+	<div class="btn btn-sm btn-icon btn-active-color-primary" data-bs-dismiss="modal">
+		<!--begin::Svg Icon | path: icons/duotune/arrows/arr061.svg-->
+		<span class="svg-icon svg-icon-1">
+			<svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+				<rect opacity="0.5" x="6" y="17.3137" width="16" height="2" rx="1" transform="rotate(-45 6 17.3137)" fill="currentColor" />
+				<rect x="7.41422" y="6" width="16" height="2" rx="1" transform="rotate(45 7.41422 6)" fill="currentColor" />
+			</svg>
+		</span>
+		<!--end::Svg Icon-->
 	</div>
-	<!--end::Modal dialog-->
+	<!--end::Close-->
 </div>
-<!--end::Modal - New Target-->
+<!--begin::Modal header-->
+<!--begin::Modal body-->
+<div class="modal-body scroll-y px-10 px-lg-15 pt-0 pb-15">
+	<!--begin:Form-->
+	<form id="FormUpdate" class="form" asp-action="Update" asp-controller="Team" enctype="multipart/form-data">
+		<div asp-validation-summary="ModelOnly" class="text-danger"></div>
+		<input asp-for="Id" type="hidden" />
+
+		<!--begin::Heading-->
+		<div class="mb-13 text-center">
+			<!--begin::Title-->
+			<h1 class="mb-3">Update Profile Team</h1>
+			<!--end::Title-->
+		</div>
+		<!--end::Heading-->
+		<!--begin::Input group-->
+		<div class="row g-p mb-8">
+			<div class="col-md-9 fv-row">
+				<label asp-for="Name" class="d-flex align-items-center fs-6 fw-semibold mb-2">
+					<span class="required">Title</span>
+				</label>
+				<input asp-for="Name" type="text" class="form-control form-control-solid" placeholder="Enter Title " />
+				<span asp-validation-for="Name" class="text-danger"></span>
+			</div>
+		</div>
+		<!--end::Input group-->
+		<!--begin::Input group-->
+		<div class="row g-p mb-8">
+			<div class="col-md-9 fv-row">
+				<label asp-for="Description" class="d-flex align-items-center fs-6 fw-semibold mb-2">
+					<span class="required">Description</span>
+				</label>
+				<input asp-for="Description" type="text" class="form-control form-control-solid" placeholder="Enter the Description" />
+				<span asp-validation-for="Description" class="text-danger"></span>
+			</div>
+		</div>
+		<!--end::Input group-->
+		<!--begin::Input group-->
+		<div class="row g-9 mb-8">
+			<!--begin::Input group-->
+			<div class="col-md-9 fv-row">
+				<!--begin::Label-->
+				<label class="d-block fw-semibold fs-6 mb-5">
+					<span class="required">Image </span>
+					<i class="fas fa-exclamation-circle ms-2 fs-7" data-bs-toggle="tooltip" title="E.g. Select a logo to represent the company that's running the campaign."></i>
+				</label>
+				<!--end::Label-->
+				<!--begin::Image input-->
+				<div class="image-input image-input-empty image-input-outline image-input-placeholder" data-kt-image-input="true">
+					<!--begin::Preview existing avatar-->
+					<div class="image-input-wrapper w-125px h-125px"></div>
+					<!--end::Preview existing avatar-->
+					<!--begin::Label-->
+					<label class="btn btn-icon btn-circle btn-active-color-primary w-25px h-25px bg-body shadow" data-kt-image-input-action="change" data-bs-toggle="tooltip" title="Change avatar">
+						<i class="bi bi-pencil-fill fs-7"></i>
+						<!--begin::Inputs-->
+						<input type="file" asp-for="ImageUrl" accept=".png, .jpg, .jpeg" />
+						<input type="hidden" name="avatar_remove" />
+						<!--end::Inputs-->
+					</label>
+					<!--end::Label-->
+					<!--begin::Cancel-->
+					<span class="btn btn-icon btn-circle btn-active-color-primary w-25px h-25px bg-body shadow" data-kt-image-input-action="cancel" data-bs-toggle="tooltip" title="Cancel avatar">
+						<i class="bi bi-x fs-2"></i>
+					</span>
+					<!--end::Cancel-->
+					<!--begin::Remove-->
+					<span class="btn btn-icon btn-circle btn-active-color-primary w-25px h-25px bg-body shadow" data-kt-image-input-action="remove" data-bs-toggle="tooltip" title="Remove avatar">
+						<i class="bi bi-x fs-2"></i>
+					</span>
+					<!--end::Remove-->
+				</div>
+				<!--end::Image input-->
+				<!--begin::Hint-->
+				<div class="form-text">Allowed file types: png, jpg, jpeg.</div>
+				<!--end::Hint-->
+			</div>
+			<!--end::Input group-->
+
+
+		</div>
+		<!--end::Input group-->
+
+		<br>
+		<br>
+		<!--begin::Actions-->
+		<div class="text-center">
+			<input id="kt_modal_1_submit" type="submit" value="Submits" class="btn btn-primary" />
+			<button type="reset" id="kt_modal_1_cancel" class="btn btn-light me-3">Cancel</button>
+		</div>
+		<!--end::Actions-->
+	</form>
+	<!--end:Form-->
+</div>
+<!--end::Modal body-->

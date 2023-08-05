@@ -90,7 +90,8 @@ namespace TeamManagment.Web.Controllers
             {
                 TempData["msg"] = Result.DeleteFailResult();
             }
-            return RedirectToAction("Index");
+            return new EmptyResult();
+           // return RedirectToAction("Index");
         }
         [HttpPost]
         public async Task<JsonResult> GetDataTableData(Request request, string x)

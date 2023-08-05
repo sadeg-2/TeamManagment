@@ -1,8 +1,13 @@
-﻿using Microsoft.Extensions.DependencyInjection;
+﻿using Hangfire;
+using Hangfire.Dashboard;
+using Microsoft.AspNetCore.Builder;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
 
 using TeamManagment.Infrasrtucture.AutoMapper;
 using TeamManagment.Infrastructure.Services;
 using TeamManagment.Infrastructure.Services.Comments;
+using TeamManagment.Infrastructure.Services.HangFireConfig;
 using TeamManagment.Infrastructure.Services.Reviews;
 using TeamManagment.Infrastructure.Services.Submissions;
 using TeamManagment.Infrastructure.Services.Tasks;
@@ -13,27 +18,39 @@ namespace TeamManagment.Infrastructure.Extensions
 {
     public static class ServiceContainer
     {
-        public static IServiceCollection RegisterServices(this IServiceCollection services)
+        public static WebApplicationBuilder RegisterServices(this WebApplicationBuilder builder)
         {
-            services.AddAutoMapper(typeof(MapperProfile).Assembly);
-            services.AddScoped<IUserService, UserService>();
-            services.AddScoped<IFileService,FileService>();
-            services.AddScoped<ITaskService, TaskService>();
-            services.AddScoped<ITeamService, TeamService>();
-            services.AddScoped<ICommentService, CommentService>();
-            services.AddScoped<ITeamMemberService, TeamMemberService>();
-            services.AddScoped<IReviewService, ReviewService>();
-            services.AddScoped<ISubmissionService, SubmissionService>();
+            builder.Services.AddAutoMapper(typeof(MapperProfile).Assembly);
+            builder.Services.AddScoped<IUserService, UserService>();
+            builder.Services.AddScoped<IFileService,FileService>();
+            builder.Services.AddScoped<ITaskService, TaskService>();
+            builder.Services.AddScoped<ITeamService, TeamService>();
+            builder.Services.AddScoped<ICommentService, CommentService>();
+            builder.Services.AddScoped<ITeamMemberService, TeamMemberService>();
+            builder.Services.AddScoped<IReviewService, ReviewService>();
+            builder.Services.AddScoped<ISubmissionService, SubmissionService>();
 
-            services.AddDistributedMemoryCache();
-            services.AddSession(options =>
+            builder.Services.AddDistributedMemoryCache();
+            builder.Services.AddSession(options =>
             {
                 // Set the desired session timeout if needed
                 options.IdleTimeout = TimeSpan.FromMinutes(30);
                 options.Cookie.HttpOnly = true;
             });
 
-            return services;
+            builder.Services.AddHangfire(x => x.UseSqlServerStorage(builder.Configuration.GetConnectionString("DefaultConnection")));
+            builder.Services.AddHangfireServer();
+
+            return builder;
+        }
+
+        public static WebApplication BuildHangFire(this WebApplication app) {
+            app.UseHangfireDashboard("/dashborad" , new DashboardOptions {
+
+                Authorization =(new[] { new HangfireDashboardAuthorizationFilter() })
+            });
+
+            return app;
         }
     }
 }

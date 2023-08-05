@@ -73,7 +73,7 @@ namespace TeamManagment.Infrastructure.Services.Teams
         {
             Response<TeamViewModel> response = new Response<TeamViewModel>() { Draw = request.Draw };
 
-            var data = _db.Teams.Where(x=> x.TeamLeaderUserName == username).AsQueryable();
+            var data = _db.Teams.Where(x=> x.TeamLeaderUserName == username ).AsQueryable();
             response.RecordsTotal = data.Count();
 
             if (request.Search.Value != null)
@@ -148,7 +148,7 @@ namespace TeamManagment.Infrastructure.Services.Teams
             Response<ColleagueViewModel> response = new Response<ColleagueViewModel>() { Draw = request.Draw };
 
             var data = _db.TeamMembers.Include(x => x.Team).Include(x => x.Member).Where(x => (x.TeamId == teamId && !x.Team.IsDelete)
-                                                                                           && !x.Member.IsDelete && !x.IsDelete).AsQueryable();
+                                                                                           && !x.Member.IsDelete  && !x.IsDelete && (x.Member.Id != userId)).AsQueryable();
             response.RecordsTotal = data.Count();
 
             if (request.Search.Value != null)
@@ -161,12 +161,7 @@ namespace TeamManagment.Infrastructure.Services.Teams
             }
             response.RecordsFiltered = await data.CountAsync();
 
-            //if (request.Order != null && request.Order.Count > 0)
-            //{
-            //    var sortColumn = request.Columns.ElementAt(request.Order.FirstOrDefault().Column).Name;
-            //    var sortDirection = request.Order.FirstOrDefault().Dir;
-            //    data = data.OrderBy(string.Concat(sortColumn, " ", sortDirection));
-            //}
+
                
             response.Data = await data.Skip(request.Start).Take(request.Length).
                     Select(x => new ColleagueViewModel

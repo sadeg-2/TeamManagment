@@ -69,7 +69,7 @@ namespace TeamManagment.Infrastructure.Services.Teams
             {
                 throw new Exception();
             }
-            var isAdded = _db.TeamMembers.Any(x => x.TeamId == team.Id && x.MemberId == member.Id);
+            var isAdded = _db.TeamMembers.Any(x => x.TeamId == team.Id && x.MemberId == member.Id && !x.IsDelete);
             if (isAdded) {
                 throw new Exception();
             }
@@ -90,7 +90,7 @@ namespace TeamManagment.Infrastructure.Services.Teams
             return newMember;
         }
 
-        public int DeleteAsync(int memberId , string teamLeaderUserName)
+        public int Delete(int memberId , string teamLeaderUserName)
         {
             var member = _db.TeamMembers.SingleOrDefault(x => !x.IsDelete && x.Id == memberId);
             if (member == null)
@@ -108,7 +108,7 @@ namespace TeamManagment.Infrastructure.Services.Teams
             _db.Update(team);
             _db.SaveChanges();
 
-            throw new NotImplementedException();
+            return member.Id;
         }
 
         public async Task<Response<AssignmentViewModel>> GetAllAssignmentData(Request request, int teamId, string userId)
@@ -150,7 +150,7 @@ namespace TeamManagment.Infrastructure.Services.Teams
         {
             Response<TeamMemberViewModel> response = new Response<TeamMemberViewModel>() { Draw = request.Draw };
 
-            var data = _db.TeamMembers.Where(x=> x.TeamId == teamId).AsQueryable();
+            var data = _db.TeamMembers.Where(x=> x.TeamId == teamId && !x.IsDelete).AsQueryable();
             response.RecordsTotal = data.Count();
 
             if (request.Search.Value != null)

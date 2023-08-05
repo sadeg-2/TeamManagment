@@ -25,5 +25,9 @@ namespace TeamManagment.Data.Models
 
         public bool relatedWithAssignment { get; set; }
         public List<Comment> Comments { get; set; }
+
+        public string NotifyMsg() {
+            return $"w:One Minute to finish task :{Title}";
+        }
     }
 }
