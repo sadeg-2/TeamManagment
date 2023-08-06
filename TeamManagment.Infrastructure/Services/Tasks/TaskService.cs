@@ -1,6 +1,8 @@
 ﻿using Hangfire;
 using System.Linq.Dynamic.Core;
+using TeamManagment.Core.Dtos.Notifications;
 using TeamManagment.Core.Enums;
+using TeamManagment.Infrastructure.Services.Notifications;
 
 namespace TeamManagment.Infrastructure.Services.Tasks
 {
@@ -8,10 +10,12 @@ namespace TeamManagment.Infrastructure.Services.Tasks
     {
         private readonly ApplicationDbContext _db;
         private readonly IMapper _mapper;
-        public TaskService(ApplicationDbContext db , IMapper mapper)
+        private readonly INotificationService _notificationService;
+        public TaskService(ApplicationDbContext db , IMapper mapper,INotificationService notificationService)
         {
             _db = db;
             _mapper = mapper;
+            _notificationService = notificationService;
 
         }
         public async Task<MyTask> CreateAsync(CreateTaskDto dto)
@@ -23,6 +27,16 @@ namespace TeamManagment.Infrastructure.Services.Tasks
             task.IsCompleted = TaskStatee.UnCompleted;
             await _db.AddAsync(task);
             await _db.SaveChangesAsync();
+            var notify = new NotificationDto
+            {
+                Action = NotificationAction.general,
+                Message = "There is an hour left until the deadline for submitting the task",
+                Title = task.Title,
+                UserId = task.AssigneeId,
+                SendAt = task.DeadLine - TimeSpan.FromHours(1),
+            };
+            await _notificationService.AddNotify(notify);
+
 
             return task;
         }

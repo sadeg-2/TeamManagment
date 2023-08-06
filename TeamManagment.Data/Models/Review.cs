@@ -18,7 +18,6 @@ namespace TeamManagment.Data.Models
         // relations
         public User Reviewr { get; set; }
         public string ReviewrId { get; set; }
-        public string? ReviewerId { get; set; }
 
     }
 }

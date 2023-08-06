@@ -3,8 +3,9 @@ using Microsoft.EntityFrameworkCore;
 using TeamManagment.Data;
 using TeamManagment.Data.Models;
 using TeamManagment.Infrastructure.Extensions;
+using TeamManagment.Infrastructure.Hubs;
 using TeamManagment.Web.Data;
-
+using TeamManagment.Web.Hubs;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -33,6 +34,8 @@ builder.Services.AddIdentity<User, IdentityRole>(
             .AddEntityFrameworkStores<ApplicationDbContext>().AddDefaultTokenProviders().AddDefaultUI();
 
 builder.RegisterServices();
+builder.Services.AddSignalR();
+
 
 var app = builder.Build();
 
@@ -63,6 +66,8 @@ app.MapControllerRoute(
 app.MapRazorPages();
 
 app.BuildHangFire();
+app.MapHub<ChatHub>("/chatHub");
+app.MapHub<NotifyHub>("/NotifyHub");
 
 
 app.SeedDb().Run();

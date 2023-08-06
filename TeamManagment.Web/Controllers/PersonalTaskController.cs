@@ -38,7 +38,6 @@ namespace TeamManagment.Web.Controllers
                 {
                     input.AssigneeId = userId;
                     var task = await _taskService.CreateAsync(input);
-                    BackgroundJob.Schedule($"{task.Id}",()=>notify(task.NotifyMsg()),task.DeadLine- DateTime.Now);
                     TempData["msg"] = Result.AddSuccessResult();
                 }
                 catch (Exception)

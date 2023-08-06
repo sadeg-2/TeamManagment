@@ -19,6 +19,7 @@ namespace TeamManagment.Web.Data
         public DbSet<Submission> Submissions { get; set; }
         public DbSet<Attatchment> Attatchments { get; set; }
         public DbSet<Review> Reviews { get; set; }
+        public DbSet<Notification> Notifications { get; set; }
         protected override void OnModelCreating(ModelBuilder builder)
         {
             base.OnModelCreating(builder);

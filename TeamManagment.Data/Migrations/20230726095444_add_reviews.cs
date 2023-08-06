@@ -15,7 +15,9 @@ namespace TeamManagment.Web.Data.Migrations
                     Message = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Rating = table.Column<byte>(type: "tinyint", nullable: false),
                     ReciverId = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    ReviewerId = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     ReviewrId = table.Column<string>(type: "nvarchar(450)", nullable: true),
+                    
                     IsDelete = table.Column<bool>(type: "bit", nullable: false),
                     CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
                     CreatedBy = table.Column<string>(type: "nvarchar(max)", nullable: false),

@@ -8,6 +8,7 @@ using TeamManagment.Infrasrtucture.AutoMapper;
 using TeamManagment.Infrastructure.Services;
 using TeamManagment.Infrastructure.Services.Comments;
 using TeamManagment.Infrastructure.Services.HangFireConfig;
+using TeamManagment.Infrastructure.Services.Notifications;
 using TeamManagment.Infrastructure.Services.Reviews;
 using TeamManagment.Infrastructure.Services.Submissions;
 using TeamManagment.Infrastructure.Services.Tasks;
@@ -29,6 +30,7 @@ namespace TeamManagment.Infrastructure.Extensions
             builder.Services.AddScoped<ITeamMemberService, TeamMemberService>();
             builder.Services.AddScoped<IReviewService, ReviewService>();
             builder.Services.AddScoped<ISubmissionService, SubmissionService>();
+            builder.Services.AddScoped<INotificationService, NotificationService>();
 
             builder.Services.AddDistributedMemoryCache();
             builder.Services.AddSession(options =>
