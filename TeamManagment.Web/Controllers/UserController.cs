@@ -38,7 +38,7 @@ namespace TeamManagment.Web.Controllers
             {
                 try
                 {
-                    await _userService.CreateAsync(input, "Sadeg$2001");
+                    await _userService.CreateAsync(input, Environment.GetEnvironmentVariable("USER_PASSWORD"));
                     _toastNotification.AddSuccessToastMessage(Result.AddSuccessResult());
                 }
                 catch (Exception)
