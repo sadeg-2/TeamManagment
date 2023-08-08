@@ -98,5 +98,12 @@ namespace TeamManagment.Web.Controllers
         {
             return Json(await _userService.GetAllForDataTable(request));
         }
+
+        [HttpPost]
+        public IActionResult ChangeEmail(string email,string password) {
+
+
+            return Ok();
+        }
     }
 }

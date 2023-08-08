@@ -1,6 +1,7 @@
 ﻿using Hangfire;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using NToastNotify;
 using STD.Web.Controllers;
 using System.Data;
 using TeamManagment.Core.Dtos.Tasks;
@@ -14,10 +15,14 @@ namespace TeamManagment.Web.Controllers
     public class PersonalTaskController : BaseController
     {
         private readonly ITaskService _taskService;
-        private TaskStatee _status; 
-        public PersonalTaskController(ITaskService taskService)
+        private TaskStatee _status;
+        private readonly IToastNotification _toastNotification;
+
+
+        public PersonalTaskController(ITaskService taskService,IToastNotification toastNotification)
         {
              _taskService = taskService;
+            _toastNotification = toastNotification;
         }
 
         public IActionResult Index()
@@ -71,6 +76,7 @@ namespace TeamManagment.Web.Controllers
                 {
                     await _taskService.UpdateAsync(input);
                     TempData["msg"] = Result.EditSuccessResult();
+
                 }
                 catch (Exception)
                 {
@@ -90,13 +96,13 @@ namespace TeamManagment.Web.Controllers
             try
             {
                 await _taskService.DeleteAsync(id);
+                _toastNotification.AddSuccessToastMessage(Result.DeleteSuccessResult());
             }
             catch (Exception)
             {
-                TempData["msg"] = Result.DeleteFailResult();
+                _toastNotification.AddErrorToastMessage(Result.DeleteFailResult());
             }
-            TempData["msg"] = Result.DeleteSuccessResult();
-            return RedirectToAction("Index");
+            return Ok();
         }
         [HttpPost]
         public async Task<JsonResult> GetDataTableData(Request request, int filter)
@@ -119,26 +125,28 @@ namespace TeamManagment.Web.Controllers
             try
             {
                 _taskService.RecoverTask(id);
-                TempData["msg"] = Result.AddSuccessResult();
+                _toastNotification.AddSuccessToastMessage(Result.RecoverSuccessResult());
             }
             catch (Exception)
             {
-                TempData["msg"] = Result.RecoverFailResult();
+                _toastNotification.AddErrorToastMessage(Result.RecoverFailResult());
+
             }
-            return RedirectToAction("RecycleTask");
+            return Ok();
         }
         [HttpGet]
         public IActionResult Remove(int id) {
             try
             {
                 _taskService.RemoveTask(id);
+                _toastNotification.AddSuccessToastMessage(Result.DeleteSuccessResult());
+
             }
             catch (Exception)
             {
-                TempData["msg"] = Result.DeleteFailResult();
+                _toastNotification.AddErrorToastMessage(Result.DeleteFailResult());
             }
-            TempData["msg"] = Result.DeleteSuccessResult();
-            return RedirectToAction("RecycleTask");
+            return Ok();
         }
 
         public async Task<IActionResult> MarkAsComplete(int id , int status) {

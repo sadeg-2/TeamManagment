@@ -34,13 +34,14 @@ namespace TeamManagment.Infrastructure.Services.Reviews
         public async Task<Response<ReviewViewModel>> GetAllReviewDatatable(Request request , string memberId)
 		{
             Response<ReviewViewModel> response = new Response<ReviewViewModel>() { Draw = request.Draw };
-            var data = _db.Reviews.Include(x=> x.Reviewr).Where(x=> x.ReciverId == memberId && !x.IsDelete).AsQueryable();
+            var data = _db.Reviews.Include(x=> x.Reviewr).Where(x=> x.ReciverId == memberId && !x.IsDelete);
             response.RecordsTotal = data.Count();
 
             if (request.Search.Value != null)
             {
                 data = data.Where(x =>
-                    x.Message.ToLower().Contains(request.Search.Value.ToLower())
+                    x.Message.ToLower().Contains(request.Search.Value.ToLower())||
+					x.Reviewr.FullName.ToLower().Contains(request.Search.Value.ToLower())
                 );
             }
             response.RecordsFiltered = await data.CountAsync();

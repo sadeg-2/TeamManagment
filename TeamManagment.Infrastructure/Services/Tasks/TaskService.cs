@@ -1,4 +1,5 @@
 ﻿using Hangfire;
+using NToastNotify;
 using System.Linq.Dynamic.Core;
 using TeamManagment.Core.Dtos.Notifications;
 using TeamManagment.Core.Enums;
@@ -11,12 +12,17 @@ namespace TeamManagment.Infrastructure.Services.Tasks
         private readonly ApplicationDbContext _db;
         private readonly IMapper _mapper;
         private readonly INotificationService _notificationService;
-        public TaskService(ApplicationDbContext db , IMapper mapper,INotificationService notificationService)
+        private readonly IToastNotification _toastNotification;
+        public TaskService(
+            ApplicationDbContext db ,
+            IMapper mapper,INotificationService notificationService,
+            IToastNotification toastNotification
+            )
         {
             _db = db;
             _mapper = mapper;
             _notificationService = notificationService;
-
+            _toastNotification = toastNotification;
         }
         public async Task<MyTask> CreateAsync(CreateTaskDto dto)
         {
@@ -56,6 +62,7 @@ namespace TeamManagment.Infrastructure.Services.Tasks
             task.IsDelete = true;
             _db.Update(task);
             _db.SaveChanges();
+
             return task.Id;
         }
 

@@ -4,7 +4,7 @@ connection.on("ReciveNotify", function (notify) {
 	var notificationItem = createNotificationItem(notify);
 
 	var container = document.getElementById("notificationContainer");
-	container.appendChild(notificationItem);
+	container.insertBefore(notificationItem, container.firstChild);
 });
 connection.start().then(function () {
 

@@ -3,7 +3,7 @@ using Hangfire.Dashboard;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-
+using NToastNotify;
 using TeamManagment.Infrasrtucture.AutoMapper;
 using TeamManagment.Infrastructure.Services;
 using TeamManagment.Infrastructure.Services.Comments;
@@ -43,6 +43,21 @@ namespace TeamManagment.Infrastructure.Extensions
             builder.Services.AddHangfire(x => x.UseSqlServerStorage(builder.Configuration.GetConnectionString("DefaultConnection")));
             builder.Services.AddHangfireServer();
 
+            builder.Services.AddMvc().AddNToastNotifyToastr(new ToastrOptions()
+            {
+                ProgressBar = true,
+                CloseButton = true,
+                TimeOut = 5000,
+                HideDuration = 3000,
+                ExtendedTimeOut = 3000,
+                ShowDuration = 3000,
+                TapToDismiss = true,
+                CloseOnHover = true,
+                EscapeHtml = false,
+
+            });
+
+           
             return builder;
         }
 
@@ -51,6 +66,7 @@ namespace TeamManagment.Infrastructure.Extensions
 
                 Authorization =(new[] { new HangfireDashboardAuthorizationFilter() })
             });
+            app.UseNToastNotify();
 
             return app;
         }
