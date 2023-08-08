@@ -38,17 +38,16 @@ namespace TeamManagment.Web.Controllers
             {
                 try
                 {
-                    await _userService.CreateAsync(input, "Sadeg$2001");
+                    await _userService.CreateAsync(input, Environment.GetEnvironmentVariable("USER_PASSWORD"));
+                    _toastNotification.AddSuccessToastMessage(Result.AddSuccessResult());
                 }
                 catch (Exception)
                 {
-
-                    TempData["msg"] = Result.AddFailResult();
+                    _toastNotification.AddErrorToastMessage(Result.AddFailResult());
                 }
-                TempData["msg"] = Result.AddSuccessResult();
             }
             else {
-                TempData["msg"] = Result.InputNotValid();
+                _toastNotification.AddWarningToastMessage(Result.InputNotValid());
             }
             return RedirectToAction("Index");
         }
@@ -69,15 +68,15 @@ namespace TeamManagment.Web.Controllers
                 try
                 {
                     await _userService.UpdateAsync(input);
+                    _toastNotification.AddSuccessToastMessage(Result.EditSuccessResult());
                 }
                 catch (Exception)
                 {
-                    TempData["msg"] = Result.EditFailResult();
+                    _toastNotification.AddErrorToastMessage(Result.EditFailResult());
                 }
-                TempData["msg"] = Result.EditSuccessResult();
             }
             else {
-                TempData["msg"] = Result.InputNotValid();
+                _toastNotification.AddWarningToastMessage(Result.InputNotValid());
             }
             return RedirectToAction("Index");
         }
@@ -107,7 +106,7 @@ namespace TeamManagment.Web.Controllers
             }
             catch (Exception)
             {
-                _toastNotification.AddSuccessToastMessage(Result.RecoverFailResult());
+                _toastNotification.AddErrorToastMessage(Result.RecoverFailResult());
             }
             return Ok();
         }

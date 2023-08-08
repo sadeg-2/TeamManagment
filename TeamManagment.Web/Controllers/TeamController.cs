@@ -185,10 +185,10 @@ namespace TeamManagment.Web.Controllers
             try
             {
                 _teamMember.Delete(memberId,userName);
-                TempData["msg"] = Result.DeleteSuccessResult();
+                _toastNotification.AddSuccessToastMessage(Result.DeleteSuccessResult());
             }
             catch (Exception) { 
-                TempData["msg"] = Result.DeleteFailResult();
+                _toastNotification.AddErrorToastMessage(Result.DeleteFailResult());
             }
 
             return RedirectToAction("ProfileTeam", new { id = teamId });
@@ -209,15 +209,15 @@ namespace TeamManagment.Web.Controllers
                 {
                     input.TeamId = teamId;
                     await _teamMember.CreateAsync(input, userName);
-                    TempData["msg"] = Result.AddSuccessResult();
+                    _toastNotification.AddSuccessToastMessage(Result.AddSuccessResult());
                 }
                 catch (Exception)
                 {
-                    TempData["msg"] = Result.AddFailResult();
+                    _toastNotification.AddErrorToastMessage(Result.AddFailResult());
                 }
             }
             else { 
-               TempData["msg"] = Result.InputNotValid();
+               _toastNotification.AddWarningToastMessage(Result.InputNotValid());
             }
             return RedirectToAction("ProfileTeam",new { id = teamId});
         }
@@ -233,7 +233,7 @@ namespace TeamManagment.Web.Controllers
             var teamId = (int)HttpContext.Session.GetInt32("TeamId");
             if (userId == null)
             {
-                TempData["msg"] = Result.InputNotValid();
+                _toastNotification.AddWarningToastMessage(Result.InputNotValid());
                 return RedirectToAction("ProfileTeam",teamId);
             }
             if (ModelState.IsValid)
@@ -241,11 +241,11 @@ namespace TeamManagment.Web.Controllers
                 try
                 {
                     _teamMember.AssignTask(dto, userId);
-                    TempData["msg"] = Result.AddSuccessResult();
+                    _toastNotification.AddSuccessToastMessage(Result.AddSuccessResult());
                 }
                 catch (Exception)
                 {
-                    TempData["msg"] = Result.AddFailResult();
+                    _toastNotification.AddErrorToastMessage(Result.AddFailResult());
                 }
             }
             return RedirectToAction("ProfileTeam", new { id = teamId });

@@ -43,15 +43,15 @@ namespace TeamManagment.Web.Controllers
                 {
                     input.AssigneeId = userId;
                     var task = await _taskService.CreateAsync(input);
-                    TempData["msg"] = Result.AddSuccessResult();
+                    _toastNotification.AddSuccessToastMessage(Result.AddSuccessResult());
                 }
                 catch (Exception)
                 {
-                    TempData["msg"] = Result.AddFailResult();
+                    _toastNotification.AddErrorToastMessage(Result.AddFailResult());
                 }
             }
             else {
-                TempData["msg"] = Result.InputNotValid();
+                _toastNotification.AddWarningToastMessage(Result.InputNotValid());
             }
             return RedirectToAction("Index");
         }
@@ -75,17 +75,17 @@ namespace TeamManagment.Web.Controllers
                 try
                 {
                     await _taskService.UpdateAsync(input);
-                    TempData["msg"] = Result.EditSuccessResult();
+                    _toastNotification.AddSuccessToastMessage(Result.EditSuccessResult());
 
                 }
                 catch (Exception)
                 {
-                    TempData["msg"] = Result.EditFailResult();
+                    _toastNotification.AddErrorToastMessage(Result.EditFailResult());
                 }
             }
             else
             {
-                TempData["msg"] = Result.InputNotValid();
+                _toastNotification.AddWarningToastMessage(Result.InputNotValid());
             }
             return RedirectToAction("Index");
         }
@@ -153,17 +153,17 @@ namespace TeamManagment.Web.Controllers
             try
             {
                 await _taskService.MarkAsync(id,(TaskStatee)status);
-                TempData["msg"] = Result.EditFailResult();
+                _toastNotification.AddSuccessToastMessage(Result.EditSuccessResult());
             }
             catch (Exception)
             {
-                TempData["msg"] = Result.UpdateStatusSuccessResult();
+                _toastNotification.AddErrorToastMessage(Result.UpdateStatusFailResult());
             }
             return RedirectToAction("Index");
         }
 
         public IActionResult notify(string msg) { 
-            TempData["msg"] = msg;
+            _toastNotification.AddInfoToastMessage(msg);
             return RedirectToAction("Index");
         }
 
