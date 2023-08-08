@@ -8,6 +8,7 @@ namespace TeamManagment.Infrastructure.Services.Users
         Task<User> CreateAsync(CreateUserDto dto , string password);
         Task<string> UpdateAsync(UpdateUserDto dto);
         Task<string> DeleteAsync(string id);
+        string Recover(string id);
         Task<UpdateUserDto> GetAsync(string id);
         Task<Response<UserViewModel>> GetAllForDataTable(Request request);
         User GetUser(string id);

@@ -16,6 +16,8 @@ namespace TeamManagment.Infrastructure.Services.Teams
             _mapper = mapper;
             _fileService = fileService;
         }
+        private Team? GetEntityTeam(int teamId) => _db.Teams.SingleOrDefault(x => !x.IsDelete && x.Id == teamId);
+
         public async Task<Team> CreateAsync(CreateTeamDto dto, string teamLeaderUserName)
         {
             // Confirm if user exist
@@ -56,7 +58,7 @@ namespace TeamManagment.Infrastructure.Services.Teams
 
         public int DeleteAsync(int teamId)
         {
-            var team = _db.Teams.SingleOrDefault(x => !x.IsDelete && x.Id == teamId);
+            var team = GetEntityTeam(teamId);
             if (team == null)
             {
                 throw new Exception();
@@ -64,6 +66,34 @@ namespace TeamManagment.Infrastructure.Services.Teams
             team.IsDelete = true;
 
             _db.Update(team);
+            _db.SaveChanges();
+
+            return team.Id;
+        }
+        public int Recover(int teamId)
+        {
+            var team = _db.Teams.SingleOrDefault(x => x.IsDelete && x.Id == teamId);
+            if (team == null)
+            {
+                throw new Exception();
+            }
+            team.IsDelete = false;
+
+            _db.Update(team);
+            _db.SaveChanges();
+
+            return team.Id;
+        }
+        public int Remove(int teamId)
+        {
+            var team = _db.Teams.SingleOrDefault(x => x.Id == teamId);
+            if (team == null)
+            {
+                throw new Exception();
+            }
+            team.IsDelete = false;
+
+            _db.Remove(team);
             _db.SaveChanges();
 
             return team.Id;
@@ -118,7 +148,7 @@ namespace TeamManagment.Infrastructure.Services.Teams
         }
 
         public TeamViewModel GetTeam(int teamId) {
-            var team = _db.Teams.SingleOrDefault(x => x.Id == teamId);
+            var team = _db.Teams.SingleOrDefault(x => x.Id == teamId && !x.IsDelete);
             if (team == null)
             {
                 throw new Exception();

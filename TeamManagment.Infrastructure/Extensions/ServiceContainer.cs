@@ -50,7 +50,7 @@ namespace TeamManagment.Infrastructure.Extensions
                 TimeOut = 5000,
                 HideDuration = 3000,
                 ExtendedTimeOut = 3000,
-                ShowDuration = 3000,
+                ShowDuration = 1500,
                 TapToDismiss = true,
                 CloseOnHover = true,
                 EscapeHtml = false,

@@ -4,6 +4,8 @@ using TeamManagment.Data;
 using TeamManagment.Data.Models;
 using TeamManagment.Infrastructure.Extensions;
 using TeamManagment.Infrastructure.Hubs;
+using TeamManagment.Infrastructure.Middlewares;
+using TeamManagment.Infrastructure.Services.Authentications;
 using TeamManagment.Web.Data;
 using TeamManagment.Web.Hubs;
 
@@ -31,7 +33,8 @@ builder.Services.AddIdentity<User, IdentityRole>(
                     config.SignIn.RequireConfirmedEmail = false;
 
                 })
-            .AddEntityFrameworkStores<ApplicationDbContext>().AddDefaultTokenProviders().AddDefaultUI();
+            .AddEntityFrameworkStores<ApplicationDbContext>().AddDefaultTokenProviders().AddDefaultUI()
+            .AddSignInManager<CustomSignInManager>();
 
 builder.RegisterServices();
 builder.Services.AddSignalR();
@@ -68,6 +71,8 @@ app.MapRazorPages();
 app.BuildHangFire();
 app.MapHub<ChatHub>("/chatHub");
 app.MapHub<NotifyHub>("/NotifyHub");
+app.UseMiddleware<NotFoundMiddleware>();
+
 
 
 app.SeedDb().Run();

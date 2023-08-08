@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using NToastNotify;
 using STD.Web.Controllers;
 using TeamManagment.Core.Dtos.Assignments;
 using TeamManagment.Core.Dtos.Tasks;
@@ -14,10 +15,13 @@ namespace TeamManagment.Web.Controllers
     {
         private readonly  ITeamService _teamService;
         private readonly ITeamMemberService _teamMember;
-        public TeamController(ITeamService teamService,ITeamMemberService teamMember)
+        private readonly IToastNotification _toastNotification;
+
+        public TeamController(ITeamService teamService,ITeamMemberService teamMember,IToastNotification toastNotification)
         {
             _teamService = teamService;
             _teamMember = teamMember;
+            _toastNotification = toastNotification;
         }
 
         public IActionResult Index()
@@ -37,17 +41,16 @@ namespace TeamManagment.Web.Controllers
                 try
                 {
                     await _teamService.CreateAsync(input,userName);
-                    TempData["msg"] = Result.AddSuccessResult();
-
+                    _toastNotification.AddSuccessToastMessage(Result.AddSuccessResult());
                 }
                 catch (Exception)
                 {
-                    TempData["msg"] = Result.AddFailResult();
+                    _toastNotification.AddErrorToastMessage(Result.AddFailResult());
                 }
             }
             else
             {
-                TempData["msg"] = Result.InputNotValid();
+                _toastNotification.AddWarningToastMessage(Result.InputNotValid());
             }
             return RedirectToAction("Index");
         }
@@ -71,37 +74,73 @@ namespace TeamManagment.Web.Controllers
                 try
                 {
                     await _teamService.UpdateAsync(input,userName);
-                    TempData["msg"] = Result.EditSuccessResult();
-
+                    _toastNotification.AddSuccessToastMessage(Result.EditSuccessResult());
                 }
                 catch (Exception)
                 {
-                    TempData["msg"] = Result.EditFailResult();
+                    _toastNotification.AddErrorToastMessage(Result.EditFailResult());
                 }
-
             }
             else
             {
-                TempData["msg"] = Result.InputNotValid();
+                _toastNotification.AddWarningToastMessage(Result.InputNotValid());
             }
             return RedirectToAction("Index");
         }
-
-        
-
         [HttpGet]
         public  IActionResult Delete(int id)
         {
             try
             {
                  _teamService.DeleteAsync(id);
+                _toastNotification.AddSuccessToastMessage(Result.DeleteSuccessResult());
             }
             catch (Exception)
             {
-                return NotFound(Result.DeleteFailResult());
+                _toastNotification.AddErrorToastMessage(Result.DeleteFailResult());
             }
-            return Ok(Result.DeleteSuccessResult());
+            return Ok();
         }
+        [HttpGet]
+        public IActionResult Recover(int id)
+        {
+            try
+            {
+                _teamService.Recover(id);
+                _toastNotification.AddSuccessToastMessage(Result.RecoverSuccessResult());
+            }
+            catch (Exception)
+            {
+                _toastNotification.AddErrorToastMessage(Result.RecoverFailResult());
+            }
+            return Ok();
+        }
+        [HttpGet]
+        public IActionResult Remove(int id)
+        {
+            try
+            {
+                _teamService.Remove(id);
+                _toastNotification.AddSuccessToastMessage(Result.DeleteSuccessResult());
+            }
+            catch (Exception)
+            {
+                _toastNotification.AddErrorToastMessage(Result.DeleteFailResult());
+            }
+            return Ok();
+        }
+
+
+
+
+
+
+
+
+
+
+
+
         [HttpPost]
         public async Task<JsonResult> GetDataTableData(Request request)
         {
@@ -110,8 +149,15 @@ namespace TeamManagment.Web.Controllers
         [HttpGet]
         public IActionResult ProfileTeam(int id) {
             HttpContext.Session.SetInt32("TeamId", id);
-
-            return View(_teamService.GetTeam(id));
+            try
+            {
+                var team = _teamService.GetTeam(id);
+                return View(team);
+            }
+            catch (Exception) {
+                ModelState.AddModelError(string.Empty, "An error occurred. Please try again.");
+                return NotFound();
+            }                
         }
         public ActionResult LoadPartialView(string target )
         {
@@ -131,7 +177,6 @@ namespace TeamManagment.Web.Controllers
         public async Task<JsonResult> GetDataTableColleagues(Request request,int teamId) {
             return Json(await _teamService.GetDataTableColleagues(request,teamId,userId));
         }
-
 
         [HttpGet]
         public IActionResult DeleteMember(int memberId)

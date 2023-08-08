@@ -50,6 +50,18 @@ namespace TeamManagment.Infrastructure.Services.Users
             _db.Update(user);
             await _db.SaveChangesAsync();
             return user.Id;
+        } 
+        public string Recover(string id)
+        {
+            var user = _db.Users.SingleOrDefault(x=> x.Id == id);
+            if (user == null)
+            {
+                throw new Exception();
+            }
+            user.IsDelete = false;
+            _db.Update(user);
+            _db.SaveChanges();
+            return user.Id;
         }
 
         public async Task<Response<UserViewModel>> GetAllForDataTable(Request request)

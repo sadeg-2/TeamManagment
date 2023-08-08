@@ -5,6 +5,7 @@ using TeamManagment.Core.Dtos.User;
 using STD.Web.Controllers;
 using Microsoft.AspNetCore.Authorization;
 using TeamManagment.Core.Enums;
+using NToastNotify;
 
 namespace TeamManagment.Web.Controllers
 {
@@ -12,9 +13,12 @@ namespace TeamManagment.Web.Controllers
     public class UserController : BaseController
     {
         private readonly IUserService _userService;
-        public UserController(IUserService userService)
+        private readonly IToastNotification _toastNotification;
+
+        public UserController(IUserService userService,IToastNotification toastNotification)
         {
             _userService = userService;
+            _toastNotification = toastNotification;
         }
 
         public IActionResult Index()
@@ -84,14 +88,28 @@ namespace TeamManagment.Web.Controllers
             try
             {
                 await _userService.DeleteAsync(id);
-                TempData["msg"] = Result.DeleteSuccessResult();
+                _toastNotification.AddSuccessToastMessage(Result.DeleteSuccessResult());
             }
             catch (Exception)
             {
-                TempData["msg"] = Result.DeleteFailResult();
+                _toastNotification.AddSuccessToastMessage(Result.DeleteFailResult());
             }
-            return new EmptyResult();
+            return Ok();
            // return RedirectToAction("Index");
+        }
+        [HttpGet]
+        public IActionResult Recover(string id)
+        {
+            try
+            {
+                _userService.Recover(id);
+                _toastNotification.AddSuccessToastMessage(Result.RecoverSuccessResult());
+            }
+            catch (Exception)
+            {
+                _toastNotification.AddSuccessToastMessage(Result.RecoverFailResult());
+            }
+            return Ok();
         }
         [HttpPost]
         public async Task<JsonResult> GetDataTableData(Request request, string x)

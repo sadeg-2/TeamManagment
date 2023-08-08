@@ -50,5 +50,11 @@ namespace STD.Web.Controllers
             base.OnActionExecuting(context);
 
         }
+        public IActionResult NotFounds() {
+
+            return View();
+        }
+       
+
     }
 }

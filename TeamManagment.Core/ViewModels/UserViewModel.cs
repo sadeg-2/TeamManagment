@@ -11,5 +11,6 @@ namespace TeamManagment.Core.ViewModels
         public string DOB { get; set; }
         public string ImageUrl { get; set; }
         public string roles { get; set; }
+        public bool IsDelete { get; set; }
     }
 }
