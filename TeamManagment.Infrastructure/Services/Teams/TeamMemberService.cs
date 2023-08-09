@@ -1,6 +1,8 @@
 ﻿using System.Linq.Dynamic.Core;
 using TeamManagment.Core.Dtos.Assignments;
+using TeamManagment.Core.Dtos.Notifications;
 using TeamManagment.Core.Enums;
+using TeamManagment.Infrastructure.Services.Notifications;
 using MyTeam = TeamManagment.Core.Helper.Teams;
 
 namespace TeamManagment.Infrastructure.Services.Teams
@@ -8,12 +10,14 @@ namespace TeamManagment.Infrastructure.Services.Teams
     public class TeamMemberService : ITeamMemberService
     {
         private readonly ApplicationDbContext _db;
-        public TeamMemberService(ApplicationDbContext db)
+        private readonly INotificationService _notificationService;
+        public TeamMemberService(ApplicationDbContext db , INotificationService notificationService)
         {
             _db = db;
+            _notificationService = notificationService;
         }
 
-        public int AssignTask(CreateAssignmentsDto dto, string CreatorId)
+        public async Task<int> AssignTask(CreateAssignmentsDto dto, string CreatorId)
         {
             var member = _db.TeamMembers.SingleOrDefault(x => !x.IsDelete && x.Id == dto.MemberId);
             if (member == null)
@@ -54,6 +58,16 @@ namespace TeamManagment.Infrastructure.Services.Teams
             };
             _db.Add(assignment);
             _db.SaveChanges();
+            var notify = new NotificationDto
+            {
+                Action = NotificationAction.general,
+                Message = "There is an hour left until the deadline for submitting the task",
+                Title = task.Title,
+                UserId = task.AssigneeId,
+                SendAt = task.DeadLine - TimeSpan.FromHours(1),
+            };
+            await _notificationService.AddNotify(notify);
+
             return assignment.Id;
         }
 
@@ -90,14 +104,14 @@ namespace TeamManagment.Infrastructure.Services.Teams
             return newMember;
         }
 
-        public int Delete(int memberId , string teamLeaderUserName)
+        public int Delete(int memberId , string teamLeaderUserName , int teamId)
         {
             var member = _db.TeamMembers.SingleOrDefault(x => !x.IsDelete && x.Id == memberId);
             if (member == null)
             {
                 throw new Exception();
             }
-            var team = _db.Teams.SingleOrDefault(x => !x.IsDelete && x.TeamLeaderUserName == teamLeaderUserName);
+            var team = _db.Teams.SingleOrDefault(x => !x.IsDelete && x.TeamLeaderUserName == teamLeaderUserName && x.Id == teamId);
             if (team == null)
             {
                 throw new Exception();
@@ -150,7 +164,7 @@ namespace TeamManagment.Infrastructure.Services.Teams
         {
             Response<TeamMemberViewModel> response = new Response<TeamMemberViewModel>() { Draw = request.Draw };
 
-            var data = _db.TeamMembers.Where(x=> x.TeamId == teamId && !x.IsDelete).AsQueryable();
+            var data = _db.TeamMembers.Where(x=> x.TeamId == teamId && !x.IsDelete && !x.Member.IsDelete  ).AsQueryable();
             response.RecordsTotal = data.Count();
 
             if (request.Search.Value != null)
@@ -206,13 +220,13 @@ namespace TeamManagment.Infrastructure.Services.Teams
             throw new NotImplementedException();
         }
 
-        public ProfileTeamMemberViewModel GetMyProfile(string memberId)
+        public ProfileTeamMemberViewModel GetMemberProfile(string memberId)
         {
             var user = _db.Users.SingleOrDefault(x => x.Id == memberId);
             var numOfTaskDone = _db.Assignments.Include(x => x.Task)
                 .Count(x=> !x.IsDelete && x.Task.AssigneeId == memberId &&
                             x.Task.IsCompleted == TaskStatee.IsCompleted);
-            var numOfTeamJoined = _db.TeamMembers.Count(x=> !x.IsDelete);
+            var numOfTeamJoined = _db.TeamMembers.Include(x=> x.Team).Count(x=> !x.IsDelete && !x.Team.IsDelete && x.MemberId == memberId);
             var profile = new ProfileTeamMemberViewModel
             {
                 FullName = user.FullName,
@@ -231,7 +245,7 @@ namespace TeamManagment.Infrastructure.Services.Teams
             if (memberId == null) {
                 throw new Exception();
             }
-            var teams = _db.TeamMembers.Include(x => x.Team).Where(x => x.MemberId == memberId && !x.IsDelete).
+            var teams = _db.TeamMembers.Include(x => x.Team).Where(x => x.MemberId == memberId && !x.IsDelete && !x.Team.IsDelete).
                 Select(x => new MyTeam { 
                         Id = x.TeamId,
                         Name = x.Team.Name,

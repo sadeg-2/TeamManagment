@@ -1,7 +1,4 @@
-﻿
-using TeamManagment.Core.Enums;
-
-namespace TeamManagment.Infrastructure.Services.Users
+﻿namespace TeamManagment.Infrastructure.Services.Users
 {
     public interface IUserService
     {
@@ -13,5 +10,6 @@ namespace TeamManagment.Infrastructure.Services.Users
         Task<Response<UserViewModel>> GetAllForDataTable(Request request);
         User GetUser(string id);
         Task<List<UserType>> GetUserRole(string id);
+        ProfileUserViewModel GetMyProfile(string userId);
     }
 }

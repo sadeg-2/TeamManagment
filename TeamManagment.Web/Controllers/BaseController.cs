@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
+using NToastNotify;
 using System.Security.Claims;
 using TeamManagment.Infrastructure.Services.Users;
 using MyUser = TeamManagment.Data.Models.User;
@@ -16,7 +17,23 @@ namespace STD.Web.Controllers
         protected string? userName;
         protected MyUser? myUser;
         private IUserService _userManager => HttpContext.RequestServices.GetService<IUserService>();
-        
+        protected IToastNotification _toastNotification => HttpContext.RequestServices.GetService<IToastNotification>();
+
+
+        [HttpGet]
+        public IActionResult MyProfile()
+        {
+            try
+            {
+                var profile = _userManager.GetMyProfile(userId);
+                return View(profile);
+            }
+            catch (Exception) {
+                _toastNotification.AddErrorToastMessage(Result.InputNotValid());
+            }
+            return NotFound();
+        }
+
         public override void OnActionExecuting(ActionExecutingContext context)
         {
             var user = context.HttpContext.User;

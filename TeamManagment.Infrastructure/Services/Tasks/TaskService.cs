@@ -1,8 +1,6 @@
-﻿using Hangfire;
-using NToastNotify;
+﻿using NToastNotify;
 using System.Linq.Dynamic.Core;
 using TeamManagment.Core.Dtos.Notifications;
-using TeamManagment.Core.Enums;
 using TeamManagment.Infrastructure.Services.Notifications;
 
 namespace TeamManagment.Infrastructure.Services.Tasks

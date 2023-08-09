@@ -1,4 +1,5 @@
-﻿using System.Linq.Dynamic.Core;
+﻿using AutoMapper.Execution;
+using System.Linq.Dynamic.Core;
 using TeamManagment.Core.Enums;
 
 namespace TeamManagment.Infrastructure.Services.Users
@@ -35,7 +36,7 @@ namespace TeamManagment.Infrastructure.Services.Users
                 user.ImageUrl = await _fileService.SaveFile(dto.ImageUrl, FolderNames.ImagesFolder);
             }
             var result = await _userManager.CreateAsync(user, password);
-            await _userManager.AddToRoleAsync(user, UserType.TeamUser.ToString());
+            await _userManager.AddToRoleAsync(user, UserType.AnyOne.ToString());
             return user;
         }
 
@@ -143,7 +144,6 @@ namespace TeamManagment.Infrastructure.Services.Users
         public User GetUser(string id) {
             return _db.Users.Single(x => x.Id == id);
         }
-
         public async Task<List<UserType>> GetUserRole(string id)
         {
             var user = await _db.Users.SingleOrDefaultAsync(x => x.Id == id);
@@ -161,5 +161,31 @@ namespace TeamManagment.Infrastructure.Services.Users
             return userTypes;
         }
 
+        public ProfileUserViewModel GetMyProfile(string userId)
+        {
+            var user = _db.Users.SingleOrDefault(x => !x.IsDelete && x.Id == userId);
+            if (user == null)
+            {
+                throw new Exception();
+            }
+            var numOfTeamJoined = _db.TeamMembers.Include(x => x.Team).Count(x => !x.IsDelete && !x.Team.IsDelete && x.MemberId == userId);
+            var query = _db.Reviews.Where(u => userId == u.ReciverId && !u.IsDelete);
+            var rating = 0;
+            if (query.Any())
+            {
+                rating =(int) query.Average(x => x.Rating);
+            }
+
+            var profileUserViewModel = new ProfileUserViewModel { 
+               Email = user.Email,
+               FullName = user.FullName,
+               Id = user.Id,
+               ImageUrl = user.ImageUrl,
+               NumOfTeamJoined = numOfTeamJoined,
+               Rating = rating
+            };
+            return profileUserViewModel; 
+        }
+    
     }
 }
