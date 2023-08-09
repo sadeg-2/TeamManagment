@@ -15,6 +15,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.Extensions.Logging;
 using MyUser = TeamManagment.Data.Models.User;
+using NToastNotify;
 
 namespace TeamManagment.Web.Areas.Identity.Pages.Account
 {
@@ -22,11 +23,17 @@ namespace TeamManagment.Web.Areas.Identity.Pages.Account
     {
         private readonly SignInManager<MyUser> _signInManager;
         private readonly ILogger<LoginModel> _logger;
+        private readonly IToastNotification _toastNotification;
 
-        public LoginModel(SignInManager<MyUser> signInManager, ILogger<LoginModel> logger)
+        public LoginModel(
+            SignInManager<MyUser> signInManager,
+            ILogger<LoginModel> logger,
+            IToastNotification toastNotification
+            )
         {
             _signInManager = signInManager;
             _logger = logger;
+            _toastNotification = toastNotification;
         }
 
         /// <summary>
@@ -116,6 +123,7 @@ namespace TeamManagment.Web.Areas.Identity.Pages.Account
                 if (result.Succeeded)
                 {
                     _logger.LogInformation("User logged in.");
+                    _toastNotification.AddSuccessToastMessage("User logged in.");
                     return LocalRedirect(returnUrl);
                 }
                 if (result.RequiresTwoFactor)
@@ -125,11 +133,13 @@ namespace TeamManagment.Web.Areas.Identity.Pages.Account
                 if (result.IsLockedOut)
                 {
                     _logger.LogWarning("User account locked out.");
+                    _toastNotification.AddWarningToastMessage("User account locked out.");
                     return RedirectToPage("./Lockout");
                 }
                 else
                 {
                     ModelState.AddModelError(string.Empty, "Invalid login attempt.");
+                    _toastNotification.AddErrorToastMessage("Invalid login attempt.");
                     return Page();
                 }
             }

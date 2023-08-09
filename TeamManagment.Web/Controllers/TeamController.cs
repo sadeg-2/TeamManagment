@@ -1,6 +1,8 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using NToastNotify;
 using STD.Web.Controllers;
+using System.Data;
 using TeamManagment.Core.Dtos.Assignments;
 using TeamManagment.Core.Dtos.Tasks;
 using TeamManagment.Core.Dtos.Teams;
@@ -11,6 +13,7 @@ using TeamManagment.Infrastructure.Services.Teams;
 
 namespace TeamManagment.Web.Controllers
 {
+    [Authorize(Roles = "Adminstrator,TeamUser")]
     public class TeamController : BaseController
     {
         private readonly  ITeamService _teamService;
@@ -130,17 +133,6 @@ namespace TeamManagment.Web.Controllers
             return Ok();
         }
 
-
-
-
-
-
-
-
-
-
-
-
         [HttpPost]
         public async Task<JsonResult> GetDataTableData(Request request)
         {
@@ -184,15 +176,15 @@ namespace TeamManagment.Web.Controllers
             var teamId = (int)HttpContext.Session.GetInt32("TeamId");
             try
             {
-                _teamMember.Delete(memberId,userName);
-                TempData["msg"] = Result.DeleteSuccessResult();
+                _teamMember.Delete(memberId,userName,teamId);
+                _toastNotification.AddSuccessToastMessage(Result.DeleteSuccessResult());
             }
-            catch (Exception) { 
-                TempData["msg"] = Result.DeleteFailResult();
+            catch (Exception) {
+                _toastNotification.AddSuccessToastMessage(Result.DeleteFailResult());
             }
 
-            return RedirectToAction("ProfileTeam", new { id = teamId });
-
+            // return RedirectToAction("ProfileTeam", new { id = teamId });
+            return Ok();
         }
         public IActionResult CreateMember()
         {

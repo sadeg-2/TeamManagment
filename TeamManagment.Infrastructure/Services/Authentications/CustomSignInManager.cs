@@ -29,6 +29,7 @@ namespace TeamManagment.Infrastructure.Services.Authentications
         {
             if (user != null && user.IsDelete)
             {
+
                 return SignInResult.NotAllowed; // Account is deleted, prevent login
             }
             return await base.CheckPasswordSignInAsync(user, password, lockoutOnFailure);

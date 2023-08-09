@@ -54,6 +54,7 @@ namespace TeamManagment.Infrastructure.Extensions
                 TapToDismiss = true,
                 CloseOnHover = true,
                 EscapeHtml = false,
+                PreventDuplicates = false,
 
             });
 

@@ -42,7 +42,6 @@ namespace TeamManagment.Web.Controllers
                 }
                 catch (Exception)
                 {
-
                     TempData["msg"] = Result.AddFailResult();
                 }
                 TempData["msg"] = Result.AddSuccessResult();

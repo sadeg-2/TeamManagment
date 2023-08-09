@@ -12,14 +12,14 @@ namespace TeamManagment.Infrastructure.Services.Teams
     {
         Task<TeamMember> CreateAsync(CreateMemberDto dto, string username);
         Task<TeamMember> UpdateAsync(UpdateMemberDto dto, string username);
-        int Delete(int memberId ,string teamLeaderUserName);
+        int Delete(int memberId ,string teamLeaderUserName,int teamId);
         UpdateMemberDto GetAsync(int memberID);
         Task<Response<TeamMemberViewModel>> GetAllForDataTable(Request request, int teamId);
         Task<Response<AssignmentViewModel>> GetAllAssignmentData(Request request, int teamId , string userId);
 
-        int AssignTask(CreateAssignmentsDto dto, string CreatorId);
+        Task<int> AssignTask(CreateAssignmentsDto dto, string CreatorId);
 
-        ProfileTeamMemberViewModel GetMyProfile(string memberId);
+        ProfileTeamMemberViewModel GetMemberProfile(string memberId);
 
         AssignmentViewModel GetAssignment(int id);
         List<MyTeam> GetMyTeam(string memberId);

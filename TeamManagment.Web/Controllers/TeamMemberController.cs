@@ -1,5 +1,7 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using STD.Web.Controllers;
+using System.Data;
 using TeamManagment.Core.Dtos.Assignments;
 using TeamManagment.Core.Dtos.Comments;
 using TeamManagment.Core.Dtos.Review;
@@ -13,6 +15,7 @@ using TeamManagment.Infrastructure.Services.Users;
 
 namespace TeamManagment.Web.Controllers
 {
+    [Authorize(Roles = "Adminstrator,TeamUser")]
     public class TeamMemberController : BaseController
     {
         private readonly ITeamMemberService _memberService;
@@ -33,23 +36,19 @@ namespace TeamManagment.Web.Controllers
             _reviewService = reviewService;
             _submissionService = submissionService;
         }
-        public IActionResult MyProfile()
-        {
-            var profile = _memberService.GetMyProfile(userId);
-            return View(profile);
-        }
         [HttpGet]
         public IActionResult Profile(string id)
         {
-            var profile = _memberService.GetMyProfile(id);
+            var profile = _memberService.GetMemberProfile(id);
 
             return View(profile);
         }
+
+
         public IActionResult MyAssignment()
         {
             return View(_memberService.GetMyTeam(userId));
         }
-
         public async Task<JsonResult> GetDataTableAssignment(Request request, int teamId)
         {
             return Json(await _memberService.GetAllAssignmentData(request, teamId, userId));
