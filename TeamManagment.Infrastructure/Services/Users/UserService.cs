@@ -29,12 +29,17 @@ namespace TeamManagment.Infrastructure.Services.Users
             //{
             //    throw new Exception("");
             //}
+
             var user = _mapper.Map<User>(dto);
             user.UserName = dto.Email;
-            if (dto.ImageUrl != null)
+            if (dto.ImageUrl != null )
             {
-                user.ImageUrl = await _fileService.SaveFile(dto.ImageUrl, FolderNames.ImagesFolder);
+                user.ImageUrl = await _fileService.SaveImage(dto.ImageUrl, FolderNames.ImagesFolder);
             }
+            else {
+                throw new Exception();
+            }
+            user.CreatedAt = DateTime.Now;
             var result = await _userManager.CreateAsync(user, password);
             await _userManager.AddToRoleAsync(user, UserType.AnyOne.ToString());
             return user;
@@ -126,20 +131,25 @@ namespace TeamManagment.Infrastructure.Services.Users
             {
                 throw new Exception();
             }
-            var user = await _db.Users.FindAsync(dto.Id);
-            if (user == null)
+            try
             {
-                throw new Exception();
-            }
-            if (dto.ImageUrl != null)
-            {
-                user.ImageUrl = await _fileService.SaveFile(dto.ImageUrl, FolderNames.ImagesFolder);
-            }
+                var user = await _db.Users.FindAsync(dto.Id);
+                if (user == null)
+                {
+                    throw new Exception();
+                }
+                if (dto.ImageUrl != null)
+                {
+                    user.ImageUrl = await _fileService.SaveImage(dto.ImageUrl, FolderNames.ImagesFolder);
+                }
 
-            var updatedUser = _mapper.Map(source : dto,destination :user);
-            _db.Update(updatedUser);
-            _db.SaveChanges();
-            return user.Id;
+                var updatedUser = _mapper.Map(source: dto, destination: user);
+                _db.Update(updatedUser);
+                _db.SaveChanges();
+            }
+            catch (Exception) { 
+            }
+            return dto.Id;
         }
         public User GetUser(string id) {
             return _db.Users.Single(x => x.Id == id);
@@ -182,10 +192,37 @@ namespace TeamManagment.Infrastructure.Services.Users
                Id = user.Id,
                ImageUrl = user.ImageUrl,
                NumOfTeamJoined = numOfTeamJoined,
-               Rating = rating
+               Rating = rating,
+               DOB = user.DOB,
+               PhoneNumber=user.PhoneNumber,
             };
             return profileUserViewModel; 
         }
-    
+
+        public async Task<string> ChangeEmail(string email, string confirmPassword, string userId) {
+            var user = _db.Users.SingleOrDefault(x=> x.Id == userId);
+            if (user== null)
+            {
+                throw new Exception();
+            }
+            var isValidPassword =  await _userManager.CheckPasswordAsync(user, confirmPassword);
+            if (!isValidPassword) {
+                throw new Exception();
+            }
+            user.Email = email;
+            _db.Update(user);
+            _db.SaveChanges();
+            return userId;
+        }
+        public async Task<string> ResetPassWrod(string currentpass, string newpass, string confirmpass, string userId) {
+            var user = _db.Users.SingleOrDefault(x=> x.Id == userId);
+            if (user == null || confirmpass != newpass)
+            {
+                throw new Exception();
+            }
+            await _userManager.ChangePasswordAsync(user, currentpass, newpass);
+
+            return userId;
+        }
     }
 }

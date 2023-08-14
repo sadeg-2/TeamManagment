@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
 using NToastNotify;
 using System.Security.Claims;
+using TeamManagment.Core.Dtos.User;
 using TeamManagment.Infrastructure.Services.Users;
 using MyUser = TeamManagment.Data.Models.User;
 
@@ -71,7 +72,45 @@ namespace STD.Web.Controllers
 
             return View();
         }
-       
+        public async Task<IActionResult> UpdateProfile([FromForm] UpdateUserDto dto) {
+            if (!ModelState.IsValid)
+            {
+                throw new Exception();
+            }
+            await _userManager.UpdateAsync(dto);
+            _toastNotification.AddSuccessToastMessage(Result.AddSuccessResult());
+
+
+            return RedirectToAction("MyProfile");
+        }
+        [HttpPost]
+        public async Task<IActionResult> ChangeEmail(string email, string password)
+        {
+            try
+            {
+                await _userManager.ChangeEmail(email, password, userId);
+                return Ok();
+            }
+            catch (Exception) {
+                return BadRequest();
+            }
+
+        }
+        [HttpPost]
+        public async Task<IActionResult> ResetPassWord(string currentpass, string newpass, string confirmpass)
+        {
+            try
+            {
+                await _userManager.ResetPassWrod(currentpass,newpass,confirmpass,userId);
+                return Ok();
+            }
+            catch (Exception)
+            {
+                return BadRequest();
+            }
+
+        }
+
 
     }
 }

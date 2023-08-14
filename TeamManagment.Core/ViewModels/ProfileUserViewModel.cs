@@ -8,5 +8,8 @@
         public string ImageUrl { get; set; }
         public int NumOfTeamJoined { get; set; }
         public int Rating { get; set; }
+        public DateTime DOB { get; set; }
+        public string PhoneNumber { get; set; }
+        
     }
 }

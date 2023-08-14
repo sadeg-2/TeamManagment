@@ -39,12 +39,12 @@ namespace TeamManagment.Web.Controllers
                 try
                 {
                     await _userService.CreateAsync(input, "Sadeg$2001");
+                    TempData["msg"] = Result.AddSuccessResult();
                 }
                 catch (Exception)
                 {
                     TempData["msg"] = Result.AddFailResult();
                 }
-                TempData["msg"] = Result.AddSuccessResult();
             }
             else {
                 TempData["msg"] = Result.InputNotValid();
@@ -114,13 +114,6 @@ namespace TeamManagment.Web.Controllers
         public async Task<JsonResult> GetDataTableData(Request request, string x)
         {
             return Json(await _userService.GetAllForDataTable(request));
-        }
-
-        [HttpPost]
-        public IActionResult ChangeEmail(string email,string password) {
-
-
-            return Ok();
         }
     }
 }

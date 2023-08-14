@@ -92,7 +92,8 @@
                     <thead>
                         <tr class="fw-bold fs-6 text-gray-800 px-7">
                             <th>@Html.DisplayNameFor(x => x.Title)</th>
-                            <th class="text-center">@Html.DisplayNameFor(x => x.DeadLine)</th>
+                            <th>@Html.DisplayNameFor(x => x.DeadLine)</th>
+                            <th class="text-center">@Html.DisplayNameFor(x => x.Description)</th>
                             <th class="text-center">Is Completed</th>
                             <th class="text-center">العمليات</th>
                         </tr>
@@ -109,8 +110,14 @@
        var datatable = DataTable(
             "/PersonalTask/GetDataTableData",
             [
-                { data: "title", name: "Title", className: "dt-right align-middle" },
+                { data: "title", name: "Title", className: "dt-right align-middle", },
                 { data: "deadLine", name: "DeadLine", className: "dt-center align-middle" },
+                {   data: "description",
+                    name: "description", 
+                    className: "dt-center align-middle",
+                   
+                },
+
                 {
                     data: null,name: null,orderable: false,className: "dt-center align-middle",
                     render: function (data) {

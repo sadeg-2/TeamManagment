@@ -94,21 +94,20 @@ var KTAccountSettingsSigninMethods = function () {
 
             validation.validate().then(function (status) {
                 if (status == 'Valid') {
-                    debugger
                     const newEmail = $("#emailaddress").val();
                     const password = $("#confirmemailpassword").val();
 
                    
                     $.ajax({
                         type: "POST",
-                        url: "/User/ChangeEmail",
+                        url: "/Base/ChangeEmail",
                         data: {
                             email : newEmail,
                             password : password,
                         },
                         success: function (result) {
                             swal.fire({
-                                text: "Sent password reset. Please check your email",
+                                text: "Change Email Successfully.",
                                 icon: "success",
                                 buttonsStyling: false,
                                 confirmButtonText: "Ok, got it!",
@@ -119,14 +118,25 @@ var KTAccountSettingsSigninMethods = function () {
                                 signInForm.reset();
                                 validation.resetForm(); // Reset formvalidation --- more info: https://formvalidation.io/guide/api/reset-form/
                                 toggleChangeEmail();
+                                location.reload();
                             });
+
 
                         },
                         error: function (error) {
-                            console.error("Error:", error);
+                            swal.fire({
+                                text: "There is an error in password",
+                                icon: "error",
+                                buttonsStyling: false,
+                                confirmButtonText: "Ok, got it!",
+                                customClass: {
+                                    confirmButton: "btn font-weight-bold btn-light-primary"
+                                }
+                            }).then(function () {
+                                location.reload();
+                            });
                         }
                     });
-
                     
                 } else {
                     swal.fire({
@@ -203,18 +213,49 @@ var KTAccountSettingsSigninMethods = function () {
 
             validation.validate().then(function (status) {
                 if (status == 'Valid') {
-                    swal.fire({
-                        text: "Sent password reset. Please check your email",
-                        icon: "success",
-                        buttonsStyling: false,
-                        confirmButtonText: "Ok, got it!",
-                        customClass: {
-                            confirmButton: "btn font-weight-bold btn-light-primary"
+                    const currentpassword = $("#currentpassword").val();
+                    const newpassword = $("#newpassword").val();
+                    const confirmpassword = $("#confirmpassword").val();
+
+                    $.ajax({
+                        type: "POST",
+                        url: "/Base/ResetPassWord",
+                        data: {
+                            currentpass: currentpassword,
+                            newpass: newpassword,
+                            confirmpass: confirmpassword,
+                        },
+                        success: function (result) {
+                            swal.fire({
+                                text: "Change PassWord Successfully.",
+                                icon: "success",
+                                buttonsStyling: false,
+                                confirmButtonText: "Ok, got it!",
+                                customClass: {
+                                    confirmButton: "btn font-weight-bold btn-light-primary"
+                                }
+                            }).then(function () {
+                                signInForm.reset();
+                                validation.resetForm(); // Reset formvalidation --- more info: https://formvalidation.io/guide/api/reset-form/
+                                toggleChangeEmail();
+                                location.reload();
+                            });
+
+
+                        },
+                        error: function (error) {
+                            swal.fire({
+                                text: "There is an error in Inputs",
+                                icon: "error",
+                                buttonsStyling: false,
+                                confirmButtonText: "Ok, got it!",
+                                customClass: {
+                                    confirmButton: "btn font-weight-bold btn-light-primary"
+                                }
+                            }).then(function () {
+                                location.reload();
+                            });
                         }
-                    }).then(function(){
-                        passwordForm.reset();
-                        validation.resetForm(); // Reset formvalidation --- more info: https://formvalidation.io/guide/api/reset-form/
-                        toggleChangePassword();
                     });
                 } else {
                     swal.fire({

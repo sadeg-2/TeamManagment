@@ -48,7 +48,7 @@ namespace TeamManagment.Infrastructure.Extensions
                 ProgressBar = true,
                 CloseButton = true,
                 TimeOut = 5000,
-                HideDuration = 3000,
+                HideDuration = 1000,
                 ExtendedTimeOut = 3000,
                 ShowDuration = 1500,
                 TapToDismiss = true,

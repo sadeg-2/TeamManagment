@@ -19,12 +19,14 @@ namespace TeamManagment.Infrastructure.Middlewares
 
         public async Task Invoke(HttpContext context)
         {
+
             await _next(context);
 
             if (context.Response.StatusCode == 404)
             {
                 context.Response.Redirect("/Base/NotFounds");
             }
+           
         }
     }
 
