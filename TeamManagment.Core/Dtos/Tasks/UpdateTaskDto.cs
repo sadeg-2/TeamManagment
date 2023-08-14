@@ -1,5 +1,8 @@
 ﻿
+using Microsoft.AspNetCore.Mvc;
 using System.ComponentModel.DataAnnotations;
+using TeamManagment.Core.ModelBinders;
+
 namespace TeamManagment.Core.Dtos.Tasks
 {
     public class UpdateTaskDto
@@ -10,6 +13,7 @@ namespace TeamManagment.Core.Dtos.Tasks
         public string Title { get; set; }
         [Required]
         [StringLength(maximumLength: 120)]
+        [ModelBinder(BinderType = typeof(HtmlEncodedModelBinder))]
         public string Description { get; set; }
         [Required]
         [DataType(DataType.DateTime)]

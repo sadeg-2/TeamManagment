@@ -1,5 +1,8 @@
 ﻿@model ProfileUserViewModel
-
+@{
+	UpdateUserDto dto = new UpdateUserDto();
+	dto.DOB = @Model.DOB;
+}
 <!--begin::Toolbar-->
 <div id="kt_app_toolbar" class="app-toolbar py-3 py-lg-6">
 </div>
@@ -152,7 +155,9 @@
 		<!--begin::Content-->
 		<div id="kt_account_settings_profile_details" class="collapse show">
 			<!--begin::Form-->
-			<form id="kt_account_profile_details_form" class="form">
+			<form asp-action="UpdateProfile" asp-controller="Base" class="form" enctype="multipart/form-data" >
+				<input asp-for="@dto.Id" type="hidden" value="@Model.Id"/>
+				<input asp-for="@dto.Email" type="hidden" value="@Model.Email" />
 				<!--begin::Card body-->
 				<div class="card-body border-top p-9">
 					<!--begin::Input group-->
@@ -171,7 +176,9 @@
 								<label class="btn btn-icon btn-circle btn-active-color-primary w-25px h-25px bg-body shadow" data-kt-image-input-action="change" data-bs-toggle="tooltip" title="Change avatar">
 									<i class="bi bi-pencil-fill fs-7"></i>
 									<!--begin::Inputs-->
-									<input type="file" name="avatar" accept=".png, .jpg, .jpeg" />
+									<input type="file" asp-for="@dto.ImageUrl" accept=".png, .jpg, .jpeg" />
+									<span asp-validation-for="@dto.ImageUrl" class="text-danger"></span>
+
 									<input type="hidden" name="avatar_remove" />
 									<!--end::Inputs-->
 								</label>
@@ -202,7 +209,8 @@
 						<!--end::Label-->
 						<!--begin::Col-->
 						<div class="col-lg-8 fv-row">
-							<input type="text" name="fname" class="form-control form-control-lg form-control-solid mb-3 mb-lg-0" placeholder="First name" value="Max" />
+							<input type="text" asp-for="@dto.FullName" class="form-control form-control-lg form-control-solid mb-3 mb-lg-0" placeholder="First name" value="@Model.FullName" />
+							<span asp-validation-for="@dto.FullName" class="text-danger"></span>
 						</div>
 						<!--end::Col-->
 														
@@ -216,7 +224,9 @@
 						<!--begin::Col-->
 						<div class="col-lg-8 fv-row">
 							<!--begin::Datepicker-->
-							<input  type="date" class="form-control form-control-solid ps-12" placeholder="Select a date"  />
+							<input asp-for="@dto.DOB"  class="form-control form-control-solid ps-12" placeholder="Select a date"  />
+							<span asp-validation-for="@dto.DOB" class="text-danger"></span>
+
 							<!--end::Datepicker-->
 						</div>
 						<!--end::Col-->
@@ -232,7 +242,9 @@
 						<!--end::Label-->
 						<!--begin::Col-->
 						<div class="col-lg-8 fv-row">
-							<input type="tel" name="phone" class="form-control form-control-lg form-control-solid" placeholder="Phone number" value="044 3276 454 935" />
+							<input type="tel" asp-for="@dto.PhoneNumber" class="form-control form-control-lg form-control-solid" placeholder="Phone number" value="@Model.PhoneNumber" />
+							<span asp-validation-for="@dto.PhoneNumber" class="text-danger"></span>
+						
 						</div>
 						<!--end::Col-->
 					</div>
@@ -280,7 +292,7 @@
 								<div class="col-lg-6 mb-4 mb-lg-0">
 									<div class="fv-row mb-0">
 										<label for="emailaddress" class="form-label fs-6 fw-bold mb-3">Enter New Email Address</label>
-										<input type="email" class="form-control form-control-lg form-control-solid" id="emailaddress" placeholder="Email Address" name="emailaddress" value="support@keenthemes.com" />
+										<input type="email" class="form-control form-control-lg form-control-solid" id="emailaddress" placeholder="Email Address" name="emailaddress" value="@Model.Email" />
 									</div>
 								</div>
 								<div class="col-lg-6">
@@ -362,7 +374,7 @@
 		<!--end::Content-->
 	</div>
 	<!--end::Sign-in Method-->
-	<!--begin::Deactivate Account-->
+	@*<!--begin::Deactivate Account-->
 	<div class="card">
 		<!--begin::Card header-->
 		<div class="card-header border-0 cursor-pointer" role="button" data-bs-toggle="collapse" data-bs-target="#kt_account_deactivate" aria-expanded="true" aria-controls="kt_account_deactivate">
@@ -422,7 +434,7 @@
 		</div>
 		<!--end::Content-->
 	</div>
-	<!--end::Deactivate Account-->
+	<!--end::Deactivate Account-->*@
 </div>
 <!--end::Content container-->
 @section Scripts{

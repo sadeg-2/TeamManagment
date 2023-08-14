@@ -35,7 +35,7 @@ namespace TeamManagment.Infrastructure.Services.Teams
             team.NumOfTeamMember = 1;
             if (dto.ImageUrl != null)
             {
-                team.ImageUrl = await _fileService.SaveFile(dto.ImageUrl, FolderNames.ImagesFolder);
+                team.ImageUrl = await _fileService.SaveImage(dto.ImageUrl, FolderNames.ImagesFolder);
             }
             await _db.Teams.AddAsync(team);
             _db.SaveChanges();
@@ -164,7 +164,7 @@ namespace TeamManagment.Infrastructure.Services.Teams
             }
             if (dto.ImageUrl != null)
             {
-                team.ImageUrl = await _fileService.SaveFile(dto.ImageUrl, FolderNames.ImagesFolder);
+                team.ImageUrl = await _fileService.SaveImage(dto.ImageUrl, FolderNames.ImagesFolder);
             }
             var updatedUser = _mapper.Map(source: dto, destination: team);
             _db.Update(updatedUser);

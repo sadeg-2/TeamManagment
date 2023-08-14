@@ -11,5 +11,8 @@
         User GetUser(string id);
         Task<List<UserType>> GetUserRole(string id);
         ProfileUserViewModel GetMyProfile(string userId);
+
+        Task<string> ChangeEmail(string email,string confirmPassword,string userId);
+        Task<string> ResetPassWrod(string currentpass, string newpass, string confirmpass,string userId);
     }
 }

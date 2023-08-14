@@ -20,6 +20,10 @@ builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 
 
 builder.Services.AddControllersWithViews();
+builder.Services.AddControllers(options =>
+{
+    options.Filters.Add(typeof(GlobalExceptionFilter));
+});
 
 builder.Services.AddIdentity<User, IdentityRole>(
                 config => {
@@ -72,6 +76,7 @@ app.BuildHangFire();
 app.MapHub<ChatHub>("/chatHub");
 app.MapHub<NotifyHub>("/NotifyHub");
 app.UseMiddleware<NotFoundMiddleware>();
+//app.UseMiddleware<ExceptionMiddleware>();
 
 
 

@@ -6,6 +6,7 @@ using STD.Web.Controllers;
 using System.Data;
 using TeamManagment.Core.Dtos.Tasks;
 using TeamManagment.Core.Enums;
+using TeamManagment.Core.Exceptions;
 using TeamManagment.Core.Helper;
 using TeamManagment.Infrastructure.Services.Tasks;
 
@@ -39,16 +40,16 @@ namespace TeamManagment.Web.Controllers
         {
             if (ModelState.IsValid)
             {
-                try
-                {
+                //try
+                //{
                     input.AssigneeId = userId;
                     var task = await _taskService.CreateAsync(input);
                     TempData["msg"] = Result.AddSuccessResult();
-                }
-                catch (Exception)
-                {
-                    TempData["msg"] = Result.AddFailResult();
-                }
+                //}
+                //catch (Exception)
+                //{
+                //    TempData["msg"] = Result.AddFailResult();
+                //}
             }
             else {
                 TempData["msg"] = Result.InputNotValid();

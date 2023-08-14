@@ -1,9 +1,10 @@
 ﻿using Microsoft.AspNetCore.Http;
 using System.ComponentModel.DataAnnotations;
+using TeamManagment.Core.Validataions;
 
 namespace TeamManagment.Core.Dtos.User
 {
-    public class CreateUserDto
+    public class CreateUserDto 
     {
         [Required]
         [StringLength(maximumLength: 30, MinimumLength = 5)]
@@ -24,6 +25,7 @@ namespace TeamManagment.Core.Dtos.User
         public DateTime DOB { get; set; }
         [Required]
         [Display(Name = "Image")]
+        [AllowedExtensions(".jpg", ".jpeg", ".png")]
         public IFormFile ImageUrl { get; set; }
 
     }
