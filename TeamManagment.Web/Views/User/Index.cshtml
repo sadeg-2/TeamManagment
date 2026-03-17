@@ -1,0 +1,271 @@
+﻿<!--begin::Header-->
+<!--begin::Toolbar-->
+<div id="kt_app_toolbar" class="app-toolbar py-3 py-lg-6">
+</div>
+<!--end::Toolbar-->
+<div id="kt_app_content_container" class="app-container container-xxl">
+    <div class="card mb-5 mb-xl-8">
+        <div class="card-header border-0 pt-5" >
+            <h3 class="card-title align-items-start flex-column">
+                <span class="card-label fw-bold fs-3 mb-1"> User Managment  </span>
+                <span class="text-muted mt-1 fw-semibold fs-7">Over 500 members</span>
+            </h3>
+            <div style ="padding-left:500px" class="card-toolbar border-0" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-trigger="hover" >
+                <a id="CreateUser" class="btn btn-sm btn-light btn-active-primary" data-popup-url="Create" data-bs-toggle="modal" data-bs-target="#kt_modal_1">
+                    <!--begin::Svg Icon | path: icons/duotune/arrows/arr075.svg-->
+                    <span class="svg-icon svg-icon-3">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <rect opacity="0.5" x="11.364" y="20.364" width="16" height="2" rx="1" transform="rotate(-90 11.364 20.364)" fill="currentColor" />
+                            <rect x="4.36396" y="11.364" width="16" height="2" rx="1" fill="currentColor" />
+                        </svg>
+                    </span>
+                    <!--end::Svg Icon-->
+                    New User
+                </a>
+            </div>
+
+            <div id="EditModal"></div>
+
+
+        </div>
+        <!--end::Header-->
+        <div class="card-body py-3">
+            <div class="table-responsive">
+                <table id="kt_datatable_dom_positioning" class="table table-row-dashed table-row-gray-300 align-middle gs-0 gy-4">
+                    <thead>
+                        <tr class="fw-bold fs-6 text-gray-800 px-7">
+                            <th>User</th>
+                            <th>Email</th>
+                            <th>DOB</th>
+                            <th>PhoneNumber</th>
+                            <th>العمليات</th>
+                        </tr>
+                    </thead>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+@section Scripts
+    {
+    <script src="~/datatable/datatable.js"></script>
+    <script>
+       var datatable =  DataTable(
+            "/User/GetDataTableData",
+            [
+                {
+                    data: null, name: "Email", sorting: false, orderable: false,
+                    render: function (data, type, row) {
+                       var icon = data.isDelete
+                        ? `<div class="ms-3">
+                             <!-- Your new icon here -->
+                                <i class="fa-solid fa-user-slash text-danger"></i>
+                            </div>`
+                        : '';
+
+                    return `<div class='d-flex align-items-center'>
+                               <div class="symbol symbol-45px me-5">
+                                   <img src="../../Images/${data.imageUrl}" alt="" />
+                               </div>
+                               <div class="d-flex justify-content-start flex-column">
+                                   <a href="/TeamMember/Profile/${data.id}" class="text-dark fw-bold text-hover-primary fs-6">${data.fullName}</a>
+                                   <span class="text-muted fw-semibold text-muted d-block fs-7">${data.roles}</span>
+                               </div>
+                               ${icon}
+                            </div>`;
+
+                    }
+                },
+                { data: "email", name: "Email", className: "dt-center align-middle" },
+                {
+                    "data": null, "name": "DOB", "autowidth": true,
+                    "sorting": false,
+                    "render": function (data, type, row) {
+                        return `<td class="text-end">
+                                        <span class="badge badge-light-danger fw-semibold me-1">${data.dob}</span>
+                                    </td>`;
+                    }
+                },
+                { data: "phoneNumber", name: "PhoneNumber", className: "text-center align-middle" },
+                {
+                    data: null, name: null, orderable: false, className: "dt-center align-middle", render: function (data) {
+                       var icon = '';
+                       if(!data.isDelete){
+                            icon =  "<div data-EditId-id='" + data.id + "'class='btn btn-icon  btn-bg-light btn-active-color-primary btn-sm me-1 updateMoodel' type = 'button' data-bs-toggle='modal' data-bs-target='#userEditModel' >" +
+                                    "<span class='svg-icon svg-icon-2' >"+
+                                    `<i class="fa-solid fa-pen-to-square "></i>` +
+                                    "</span>"+
+                                    "</div>" +
+                                    // href='/User/Delete/" + data.id + "'
+                                    "<a id='deleteButton_" + data.id + "' class='btn btn-icon  btn-bg-light btn-active-color-primary btn-sm me-1 confirm' data-delete-url='/User/Delete/'>" +
+                                    "<span class='svg-icon svg-icon-2'>" +
+                                    `<i class="fa-solid fa-trash-can text-danger"></i>` +
+                                    "</span>" +
+                                    "</a>";
+                       }else{
+                            icon =  "<a data-recover-url='/User/Recover/' id='recover_" + data.id + "' class='btn btn-icon  btn-bg-light btn-active-color-primary btn-sm me-1 confirm' >" +
+                                    "<span class='svg-icon svg-icon-2'>" +
+                                `<i class="fa-solid fa-trash-can-arrow-up text-danger"></i>` +
+                                    "</span>" +
+                                    "</a>"
+                       }
+                        
+                        
+                        return icon;
+                    }
+                },
+               
+            ],
+
+        );
+        $(document).on("click", ".updateMoodel", function () {
+            let modelId = $(this).closest("div[data-EditId-id]").attr("data-EditId-id");
+            $.ajax(
+                {
+                    url: "/User/Update/" + modelId,
+                    success: function (result) {
+                        $(".modal-content").html(result);
+                        $("#EditModel").modal("show");
+                    }
+                });
+        });
+        
+        $(document).ready(function () {
+                $('#CreateUser').click(function (e) {
+                e.preventDefault();
+                var popupUrl = $(this).data('popup-url');
+                $.ajax({
+                    url: popupUrl,
+                    type: 'GET',
+                    success: function (result) {
+                        $('.modal-content').html(result);
+                        $('#EditModel').modal('show');
+                    },
+                    error: function (xhr, status, error) {
+                        console.error(error);
+                    }
+                });
+            });
+        });
+        // Function to handle delete confirmation
+        function DeleteItem() {
+            var deleteUrl = $(this).data('delete-url');
+            var id = $(this).attr('id').split('_')[1];
+
+            Swal.fire({
+                title: 'Are you sure?',
+                text: `You are about to delete This User`,
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonText: 'Yes',
+                cancelButtonText: 'No'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    // User clicked "Yes"
+                    $.ajax({
+                        url: deleteUrl + id ,
+                        type: 'Get',
+                        success: function (response) {
+                            Swal.fire({
+                                title: 'Deleted!',
+                                text: `This User has been deleted.`,
+                                icon: 'success',
+                                showConfirmButton: true,
+                                confirmButtonText: 'OK'
+                            }).then(() => {
+                                datatable.ajax.reload();
+                            });
+                        },
+                        error: function (xhr, status, error) {
+                            Swal.fire('Error', 'An error occurred while deleting this USer.', 'error');
+                        }
+                    });
+                } else if (result.dismiss === Swal.DismissReason.cancel) {
+                    // User clicked "No" or closed the dialog
+                    Swal.fire('Cancelled', `Deletion of User  was cancelled.`, 'info');
+                }
+            });
+        }
+        // Add event listener to delete buttons
+        $(document).on('click', '[id^="deleteButton_"]', DeleteItem);
+        
+        // Function to handle delete confirmation
+        function RecoverItem() {
+            var deleteUrl = $(this).data('recover-url');
+            var id = $(this).attr('id').split('_')[1];
+
+            Swal.fire({
+                title: 'Are you sure?',
+                text: `You are about to Recover This User`,
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonText: 'Yes',
+                cancelButtonText: 'No'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    // User clicked "Yes"
+                    $.ajax({
+                        url: deleteUrl + id ,
+                        type: 'Get',
+                        success: function (response) {
+                            Swal.fire({
+                                title: 'Recovered!',
+                                text: `This User has been Recovered.`,
+                                icon: 'success',
+                                showConfirmButton: true,
+                                confirmButtonText: 'OK'
+                            }).then(() => {
+                                datatable.ajax.reload();
+                            });
+                        },
+                        error: function (xhr, status, error) {
+                            Swal.fire('Error', 'An error occurred while Recovering this USer.', 'error');
+                        }
+                    });
+                } else if (result.dismiss === Swal.DismissReason.cancel) {
+                    // User clicked "No" or closed the dialog
+                    Swal.fire('Cancelled', `Recovering of User  was cancelled.`, 'info');
+                }
+            });
+        }
+        // Add event listener to delete buttons
+        $(document).on('click', '[id^="recover_"]', RecoverItem);
+        function _funAfterGetData() {
+            $('.status-check-input').change(function () {
+                let me = this;
+                if (me.checked) {
+                    $.ajax(
+                        {
+                            url: me.dataset.action + "1"
+                        });
+                }
+                else {
+                    $.ajax(
+                        {
+                            url: me.dataset.action + "2"
+                        });
+                }
+            });
+
+            $('.onSale-check-input').change(function () {
+                let me = this;
+                if (me.checked) {
+                    $.ajax(
+                        {
+                            url: me.dataset.action + true
+                        });
+                }
+                else {
+                    $.ajax(
+                        {
+                            url: me.dataset.action + false
+                        });
+                }
+            });
+        }
+
+    </script>
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/jquery/dist/jquery.js"></script>
+
+}

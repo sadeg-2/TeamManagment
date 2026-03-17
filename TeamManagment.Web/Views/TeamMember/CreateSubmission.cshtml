@@ -1,0 +1,102 @@
+﻿@model CreateSubmissionDto
+
+<div class="modal-header pb-0 border-0 justify-content-end">
+	<div class="btn btn-sm btn-icon btn-active-color-primary" data-bs-dismiss="modal">
+		<span class="svg-icon svg-icon-1">
+			<svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+				<rect opacity="0.5" x="6" y="17.3137" width="16" height="2" rx="1" transform="rotate(-45 6 17.3137)" fill="currentColor" />
+				<rect x="7.41422" y="6" width="16" height="2" rx="1" transform="rotate(45 7.41422 6)" fill="currentColor" />
+			</svg>
+		</span>
+	</div>
+</div>
+<div class="modal-body scroll-y px-10 px-lg-15 pt-0 pb-15">
+	<form id="kt_modal_new" class="form" asp-action="CreateSubmission" asp-controller="TeamMember" enctype="multipart/form-data">
+		<div asp-validation-summary="ModelOnly" class="text-danger"></div>
+		<input asp-for="AssignmentId" type="hidden" value="@ViewData["AssignmentId"]" />
+		<div class="mb-13 text-center">
+			<h1 class="mb-3">Add Submission</h1>
+		</div>
+		<div class="row g-p mb-8">
+			<div class="col-md-9 fv-row">
+				<label asp-for="Attatchments" class="d-flex align-items-center fs-6 fw-semibold mb-2">
+					<span class="required">Description</span>
+				</label>
+				<input asp-for="Attatchments" type="file" class="form-control form-control-solid" multiple  />
+				<span asp-validation-for="Attatchments" class="text-danger"></span>
+			</div>
+            <div id="filePreviewsContainer" class="mt-2">
+				<!-- The file names will be displayed here -->
+			</div>
+		</div>
+		
+		<br>
+		<br>
+		<div class="text-center">
+			<input type="submit" value="Submits" class="btn btn-primary" />
+			<button type="reset" id="kt_modal_new" class="btn btn-light me-3">Cancel</button>
+		</div>
+	</form>
+</div>
+
+<script>
+    const fileInput = document.querySelector('input[type="file"]');
+    const filePreviewsContainer = document.getElementById("filePreviewsContainer");
+
+    fileInput.addEventListener("change", function (event) {
+        const selectedFiles = event.target.files;
+        filePreviewsContainer.innerHTML = ""; // Clear the file previews container
+
+        // Display the file previews in the container
+        for (let i = 0; i < selectedFiles.length; i++) {
+            const file = selectedFiles[i];
+            const filePreviewElement = document.createElement("div");
+            filePreviewElement.classList.add("file-preview");
+            let filePreviewIcon ;
+            if (file.type == 'application/pdf') {
+                // Create the SVG icon
+                filePreviewIcon = document.createElement("img");
+                filePreviewIcon.src = "/assets/media/svg/files/pdf.svg"; // Replace with the path to your pdf.svg file
+                filePreviewIcon.alt = "PDF Icon";
+                filePreviewIcon.classList.add("file-preview-icon");
+            }else {
+                filePreviewIcon = document.createElement("img");
+                filePreviewIcon.src = "/assets/media/svg/files/doc.svg"; // Replace with the path to your pdf.svg file
+                filePreviewIcon.alt = "Doc Icon";
+                filePreviewIcon.classList.add("file-preview-icon");
+            }
+            filePreviewElement.addEventListener("click", function () {
+                const fileURL = URL.createObjectURL(file);
+                window.open(fileURL, "_blank");
+            });
+            filePreviewIcon.setAttribute("title", "Open File"); // Hover text for PDF files
+
+            filePreviewElement.appendChild(filePreviewIcon);
+            const fileNameElement = document.createElement("div");
+            fileNameElement.textContent = file.name;
+            fileNameElement.classList.add("file-preview-name");
+            filePreviewElement.appendChild(fileNameElement);
+
+            filePreviewsContainer.appendChild(filePreviewElement);
+        }
+    });
+</script>
+
+<style>
+    .file-preview {
+        display: inline-block;
+        margin-right: 10px;
+        text-align: center;
+    }
+
+    .file-preview-icon {
+        width: 100px;
+        height: 100px;
+        object-fit: cover;
+        border: 1px solid #ccc;
+    }
+
+    .file-preview-name {
+        margin-top: 5px;
+    }
+</style>

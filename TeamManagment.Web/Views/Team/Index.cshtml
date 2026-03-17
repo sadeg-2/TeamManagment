@@ -1,0 +1,312 @@
+﻿@model TeamViewModel
+@{
+    ViewBag.Title = "Team Managment";
+    var dto = new CreateTeamDto();
+}
+<!--begin::Header-->
+<!--begin::Toolbar-->
+<div id="kt_app_toolbar" class="app-toolbar py-3 py-lg-6">
+</div>
+<!--end::Toolbar-->
+
+<div id="kt_app_content_container" class="app-container container-xxl">
+    <div class="card mb-5 mb-xl-8">
+        <div class="card-header border-0 pt-5" >
+            <h3 class="card-title align-items-start flex-column">
+                <span class="card-label fw-bold fs-3 mb-1"> Team Managment </span>
+                <span class="text-muted mt-1 fw-semibold fs-7">Over 500 members</span>
+            </h3>
+
+            <!--begin::Actions-->
+            <div style="padding-left:420px" class="d-flex align-items-center gap-2 gap-lg-3">
+                <div  class="card-toolbar border-0" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-trigger="hover" >
+                    <a class="btn btn-sm btn-light btn-active-primary" data-popup-url="Create" data-bs-toggle="modal" data-bs-target="#kt_modal_1">
+                        <!--begin::Svg Icon | path: icons/duotune/arrows/arr075.svg-->
+                        <span class="svg-icon svg-icon-3">
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <rect opacity="0.5" x="11.364" y="20.364" width="16" height="2" rx="1" transform="rotate(-90 11.364 20.364)" fill="currentColor" />
+                                <rect x="4.36396" y="11.364" width="16" height="2" rx="1" fill="currentColor" />
+                            </svg>
+                        </span>
+                        <!--end::Svg Icon-->
+                        New Team
+                    </a>
+                </div>
+                <!--end::Primary button-->
+
+            </div>
+            <!--end::Actions-->
+            @*<div id="popupContainer"></div>*@
+            <partial  name="_Create" model="@dto">
+
+
+        </div>
+        <!--end::Header-->
+        <div class="card-body py-3">
+            <div class="table-responsive">
+                <table id="kt_datatable_dom_positioning" class="table table-row-dashed table-row-gray-300 align-middle gs-0 gy-4">
+                    <thead>
+                        <tr class="fw-bold fs-6 text-gray-800 px-7">
+                            <th >@Html.DisplayNameFor(x => x.Name)</th>
+                            <th class="text-center">@Html.DisplayNameFor(x => x.TeamLeaderUserName)</th>
+                            <th class="text-center">@Html.DisplayNameFor(x => x.NumOfTeamMember)</th>
+                            <th class="text-center">Status Team</th>
+                            <th class="text-center">العمليات</th>
+                        </tr>
+                    </thead>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+@section Scripts
+    {
+    <script src="~/datatable/datatable.js"></script>
+    <script>
+       var datatable = DataTable(
+            "/Team/GetDataTableData/",
+            [
+                { data: "name", name: "Name", className: "dt-right align-middle" },
+                { data: "teamLeaderUserName", name: "TeamLeaderUserName", className: "dt-center align-middle" },
+                { data: "numOfTeamMember", name: "NumOfTeamMember", className: "dt-center align-middle" },
+                { data: null, name: null, className: "dt-right align-middle",
+                    render: function (data) {
+                        var badgeClass = '';
+                        var txt = '';
+
+                        if (data.isDelete) {
+                            badgeClass = 'badge-light-danger';
+                            txt = 'delete';
+                        } else if (!data.isDelete) {
+                            badgeClass = 'badge-light-success';
+                            txt = 'exist';
+                        }
+
+                        return "<td class='text-end'>" +
+                            "<span class='badge " + badgeClass + "'>" + txt + "</span>" +
+                            "</td>";
+                    }
+                },
+                {
+                    data: null,
+                    name: null,
+                    orderable: false,
+                    className: "dt-center align-middle",
+                    render: function (data) {
+
+                        var button = '';
+                        if (!data.isDelete) {
+                           button =
+                                
+                                "<a id='deleteButton_" + data.id + "'class='btn btn-icon  btn-bg-light btn-active-color-primary btn-sm me-1 delete' data-delete-url='/Team/Delete/'>" +
+                                "<span class='svg-icon svg-icon-2'>" +
+                                `<i class="fa-solid fa-trash-can"></i>` +
+                                "</span>" +
+                                "</a>" +
+                                "<a  href='/Team/ProfileTeam/" + data.id + "'class='btn btn-icon btn-bg-light btn-active-color-primary btn-sm me-1  delete' data-id='" + data.id + "'>" +
+                                ` <!--begin::Svg Icon | path: icons/duotune/art/art005.svg-->
+					                <span class="svg-icon svg-icon-2">
+										<svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+											<path d="M20 14H18V10H20C20.6 10 21 10.4 21 11V13C21 13.6 20.6 14 20 14ZM21 19V17C21 16.4 20.6 16 20 16H18V20H20C20.6 20 21 19.6 21 19ZM21 7V5C21 4.4 20.6 4 20 4H18V8H20C20.6 8 21 7.6 21 7Z" fill="currentColor"></path>
+											<path opacity="0.3" d="M17 22H3C2.4 22 2 21.6 2 21V3C2 2.4 2.4 2 3 2H17C17.6 2 18 2.4 18 3V21C18 21.6 17.6 22 17 22ZM10 7C8.9 7 8 7.9 8 9C8 10.1 8.9 11 10 11C11.1 11 12 10.1 12 9C12 7.9 11.1 7 10 7ZM13.3 16C14 16 14.5 15.3 14.3 14.7C13.7 13.2 12 12 10.1 12C8.10001 12 6.49999 13.1 5.89999 14.7C5.59999 15.3 6.19999 16 7.39999 16H13.3Z" fill="currentColor"></path>
+										</svg>
+									</span>
+					              <!--end::Svg Icon-->`+
+                                "</a>";
+
+                        } else {
+                             button=
+                                `<a id='recover_${data.id}' data-recover-url='/Team/Recover/' class="btn btn-icon btn-bg-light btn-active-color-primary btn-sm me-1 recover" data-bs-trigger='hover' title='Show Profile'>
+                                    <!--begin::Svg Icon | path: icons/duotune/art/art005.svg-->
+                                    <span class="svg-icon svg-icon-2">
+                                        <i class="fa-solid fa-rotate-left"></i>
+                                    </span>
+                                    <!--end::Svg Icon-->
+                                </a>`+
+                                `<a  id='remove_${data.id}' data-remove-url='/Team/Remove/' class="btn btn-icon btn-bg-light btn-active-color-primary btn-sm me-1" data-bs-trigger='hover' title='Show Profile'>
+                                    <!--begin::Svg Icon | path: icons/duotune/art/art005.svg-->
+                                    <span class="svg-icon svg-icon-2">
+                                        <i class="fa-solid fa-ban"></i>
+                                    </span>
+                                    <!--end::Svg Icon-->
+                                </a>`;
+                        }
+                        return  button;
+                                
+                                
+                               
+                    },
+                }
+            ],
+        );
+        // Function to handle delete confirmation
+        function DeleteItem() {
+            var deleteUrl = $(this).data('delete-url');
+            var id = $(this).attr('id').split('_')[1];
+
+            Swal.fire({
+                title: 'Are you sure?',
+                text: `You are about to delete This Team with ID: ${id}`,
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonText: 'Yes',
+                cancelButtonText: 'No'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    // User clicked "Yes"
+                    $.ajax({
+                        url: deleteUrl + id,
+                        type: 'Get',
+                        success: function (response) {
+                            Swal.fire({
+                                title: 'Deleted!',
+                                text: `This Team with ID: ${id} has been deleted.`,
+                                icon: 'success',
+                                showConfirmButton: true,
+                                confirmButtonText: 'OK'
+                            }).then(() => {
+                                // Perform any additional action after the confirmation alert is closed
+                                console.log('Additional action after OK is pressed');
+
+                                datatable.ajax.reload();
+                            });
+                        },
+                        error: function (xhr, status, error) {
+                            Swal.fire('Error', 'An error occurred while deleting the Team.', 'error');
+                        }
+                    });
+                } else if (result.dismiss === Swal.DismissReason.cancel) {
+                    // User clicked "No" or closed the dialog
+                    Swal.fire('Cancelled', `Deletion of Team with ID: ${id} was cancelled.`, 'info');
+                }
+            });
+        }
+        // Add event listener to delete buttons
+        $(document).on('click', '[id^="deleteButton_"]', DeleteItem);
+        // Function to handle delete confirmation
+        function RecoverItem() {
+            var deleteUrl = $(this).data('recover-url');
+            var id = $(this).attr('id').split('_')[1];
+
+            Swal.fire({
+                title: 'Are you sure?',
+                text: `You are about to Recover This Team with ID: ${id}`,
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonText: 'Yes',
+                cancelButtonText: 'No'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    // User clicked "Yes"
+                    $.ajax({
+                        url: deleteUrl + id,
+                        type: 'Get',
+                        success: function (response) {
+                            Swal.fire({
+                                title: 'Recovered!',
+                                text: `This Team with ID: ${id} has been deleted.`,
+                                icon: 'success',
+                                showConfirmButton: true,
+                                confirmButtonText: 'OK'
+                            }).then(() => {
+                                // Perform any additional action after the confirmation alert is closed
+                                console.log('Additional action after OK is pressed');
+
+                                datatable.ajax.reload();
+                            });
+                        },
+                        error: function (xhr, status, error) {
+                            Swal.fire('Error', 'An error occurred while Recovering the Team.', 'error');
+                        }
+                    });
+                } else if (result.dismiss === Swal.DismissReason.cancel) {
+                    // User clicked "No" or closed the dialog
+                    Swal.fire('Cancelled', `Recover of Team with ID: ${id} was cancelled.`, 'info');
+                }
+            });
+        }
+        // Add event listener to delete buttons
+        $(document).on('click', '[id^="recover_"]', RecoverItem);
+
+        function RemoveItem() {
+            var deleteUrl = $(this).data('remove-url');
+            var id = $(this).attr('id').split('_')[1];
+
+            Swal.fire({
+                title: 'Are you sure?',
+                text: `You are about to Remove This Team with ID: ${id}`,
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonText: 'Yes',
+                cancelButtonText: 'No'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    // User clicked "Yes"
+                    $.ajax({
+                        url: deleteUrl + id,
+                        type: 'Get',
+                        success: function (response) {
+                            Swal.fire({
+                                title: 'Removed!',
+                                text: `This Team with ID: ${id} has been Removed.`,
+                                icon: 'success',
+                                showConfirmButton: true,
+                                confirmButtonText: 'OK'
+                            }).then(() => {
+                                // Perform any additional action after the confirmation alert is closed
+                                console.log('Additional action after OK is pressed');
+
+                                datatable.ajax.reload();
+                            });
+                        },
+                        error: function (xhr, status, error) {
+                            Swal.fire('Error', 'An error occurred while Removing the Team.', 'error');
+                        }
+                    });
+                } else if (result.dismiss === Swal.DismissReason.cancel) {
+                    // User clicked "No" or closed the dialog
+                    Swal.fire('Cancelled', `Removing of Team with ID: ${id} was cancelled.`, 'info');
+                }
+            });
+        }
+        // Add event listener to delete buttons
+        $(document).on('click', '[id^="remove_"]', RemoveItem);
+
+
+        function _funAfterGetData() {
+            $('.status-check-input').change(function () {
+                let me = this;
+                if (me.checked) {
+                    $.ajax(
+                        {
+                            url: me.dataset.action + "1"
+                        });
+                }
+                else {
+                    $.ajax(
+                        {
+                            url: me.dataset.action + "2"
+                        });
+                }
+            });
+
+            $('.onSale-check-input').change(function () {
+                let me = this;
+                if (me.checked) {
+                    $.ajax(
+                        {
+                            url: me.dataset.action + true
+                        });
+                }
+                else {
+                    $.ajax(
+                        {
+                            url: me.dataset.action + false
+                        });
+                }
+            });
+        }
+    </script>
+	<script src="~/lib/jquery-validation/dist/jquery.validate.min.js"></script>
+	<script src="~/lib/jquery-validation-unobtrusive/jquery.validate.unobtrusive.min.js"></script>
+}

@@ -1,0 +1,93 @@
+﻿@model  List<Teams>
+<!--Content Popup-->
+<div class="modal fade" id="feedbackModel" tabindex="-1" data-bs-backdrop="static" aria-hidden="true">
+	<div class="modal-dialog modal-dialog-centered mw-650px">
+		<div class="modal-content rounded">
+		</div>
+	</div>
+</div>
+
+<div id="kt_app_toolbar" class="app-toolbar py-3 py-lg-6">
+</div>
+<div id="kt_app_content_container" class="app-container container-xxl">
+	<div class="card mb-5 mb-xl-8">
+		<!--begin::Tables Widget 9-->
+		<div class="card-body pt-9 pb-0">
+			<!--begin::Header-->
+			<div class="card-header border-0 pt-5">
+				<h3 class="card-title align-items-start flex-column">
+					<span class="card-label fw-bold fs-3 mb-1">My Colleagues</span>
+				</h3>
+				<div class="card-toolbar" data-bs-toggle="tooltip" data-bs-placement="top" >
+					<div class="" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-trigger="hover">
+						<!--begin::Select-->
+						 <select id="teamSelect" name="status" data-control="select2" data-hide-search="true" class="form-select form-select-sm bg-body border-body w-125px">
+							@foreach (var team in Model)
+							{
+								<option value=@team.Id>@team.Name</option>
+							}
+						</select>
+						<!--end::Select-->
+					</div>
+				</div>
+			</div>
+			<!--end::Header-->
+			<!--begin::Body-->
+			<div class="card-body py-3">
+				<!--begin::Table container-->
+				<div class="table-responsive">
+					<!--begin::Table-->
+					<table id="kt_datatable_dom_positioning" class="table table-row-dashed table-row-gray-300 align-middle gs-0 gy-4">
+						<!--begin::Table head-->
+						<thead>
+							<tr class="fw-bold text-muted">
+								<th>Member</th>
+								<th>Position</th>
+								<th>My Rating</th>
+								<th>Actions</th>
+							</tr>
+						</thead>
+						<!--end::Table head-->
+						
+					</table>
+					<!--end::Table-->
+				</div>
+				<!--end::Table container-->
+			</div>
+			<!--begin::Body-->
+		</div>
+		<!--end::Tables Widget 9-->
+	</div>
+</div>
+<!--begin::Table body-->
+@section Scripts{
+	<script src="~/lib/jquery-validation/dist/jquery.validate.min.js"></script>
+	<script src="~/lib/jquery-validation-unobtrusive/jquery.validate.unobtrusive.min.js"></script>
+	<script src="~/datatable/Colleagues.js"></script>
+
+	<script>
+		var datatable = DataTable();
+		$('#teamSelect').on('change', function () {
+			// Redraw the DataTable
+			datatable.ajax.reload();
+		});
+		$(document).on("click", ".feedBack", function (e) {
+			e.preventDefault();
+			const dataId = this.getAttribute("data-Feed-id");
+			$.ajax({
+				url: "/TeamMember/CreateReview/",
+				data: {
+					reciverId: dataId
+				},
+				success: function (result) {
+					console.log(result);
+					$(".modal-content").html(result);
+					$("#feedbackModel").modal("show");
+				}
+			});
+			return false;
+		});
+	</script>
+
+
+}
