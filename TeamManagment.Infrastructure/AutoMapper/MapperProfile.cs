@@ -6,14 +6,7 @@ namespace TeamManagment.Infrasrtucture.AutoMapper
     {
         public MapperProfile()
         {
-            // src , dist
-            CreateMap<CreateUserDto, User>().
-                ForMember(x => x.ImageUrl, x => x.Ignore());
-            CreateMap<UpdateUserDto, User>().
-               ForMember(x => x.ImageUrl, x => x.Ignore());
-            CreateMap<User, UpdateUserDto>().
-              ForMember(x => x.ImageUrl, x => x.Ignore());
-           
+     
             CreateMap<User, UserViewModel>().ForMember(x=> x.DOB , x => x.MapFrom(x => x.DOB.ToShortDateString()));
 
             CreateMap<MyTask, TaskViewModel>()
